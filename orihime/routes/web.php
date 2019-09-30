@@ -22,4 +22,8 @@ Route::group(['prefix' => 'admin'], function () {
 
 Auth::routes();
 
+// ダッシュボード（ホーム画面）
 Route::get('/home', 'HomeController@index')->name('home');
+
+// 注文入力画面
+Route::get('/order', 'OrderController@index')->name('order');
