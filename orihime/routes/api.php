@@ -16,3 +16,14 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// 注文検索
+// TODO: とりあえずGETで作成。疎通後POSTに変更
+Route::get('/order/search', 'OrderController@search')->name('order_search');
+
+
+// 注文新規登録
+// TODO: とりあえずGETで作成。疎通後POSTに変更
+Route::get('/order/create', 'OrderController@create')->name('order_create');
+
+
