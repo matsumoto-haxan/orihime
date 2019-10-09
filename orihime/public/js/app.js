@@ -49357,7 +49357,98 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
  */
 
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+  data: {
+    // comedians: {}
+    orders: {},
+    moomins: [
+      {
+        id: "1",
+        name: "ムーミン",
+        category: "妖精",
+        color: "白"
+      },{
+        id: "2",
+        name: "スナフキン",
+        category: "人？",
+        color: "緑"
+      }],
+    test =[
+      {
+        "product_id": 1,
+        "company_id": 1,
+        "product_code": "TR640A",
+        "delivery_name": "\u6771\u6d0b\u30af\u30aa\u30ea\u30c6\u30a3\u30ef\u30f3\u3010\u30b3\u30a4\u30ef\u5185\u3011",
+        "ship_date": [
+          {
+            "day": "1",
+            "order_length": 100,
+            "lacking_flg": null
+          }
+        ],
+        "remarks": null
+      }],
+    
+    test2 =[
+      {
+        "id": 1,
+        "product_id": 1, "company_id": 1, "opt_order_no": "5906", "delivery_date": "2019-10-01", "exp_ship_date": "2019-10-01", "ship_date": null, "order_length": 100, "result_length": null, "lacking_flg": null, "remarks": null, "user_id": 1, "created_at": "2019-09-30 02:41:00", "updated_at": "2019-09-30 02:44:50", "deleted_at": null,
+        "product_code": "TR640A",
+        "material_code": null,
+        "color_code": "Y605",
+        "roll_length": 50,
+        "sort_order": null,
+        
+        "customer_name": "\u5e1d\u4eba\u30d5\u30ed\u30f3\u30c6\u30a3\u30a2",
+        "customer_code": "2A2C",
+        "delivery_name": "\u6771\u6d0b\u30af\u30aa\u30ea\u30c6\u30a3\u30ef\u30f3\u3010\u30b3\u30a4\u30ef\u5185\u3011",
+        "delivery_code": "3491-26T",
+        "enduser_name": "\u6797\u30c6\u30ec\u30f3\u30d7",
+        "enduser_code": null,
+        "delivery_lag": 3
+      }],
+    
+  },
+  mounted() {
+    /*
+    var self = this;
+    var url = '/api/order/search';
+    axios.get(url)
+      .then(function (response) {
+        self.comedians = response.data;
+      });
+      */
+  },
+  methods: {
+    /*
+    fetchTodos: function () {
+      axios.get('/api/get').then((res) => {
+        this.todos = res.data
+      });
+    },
+    */
+    searchOrders: function () {
+      axios.get('/api/order/search').then((res) => {
+        //console.log(res.data);
+        this.orders = res.data
+      });
+    },
+    changeMoomin: function () {
+      var snifs = [
+        {
+          id: "3",
+          name: "スニフ",
+          category: "カンガルー？",
+          color: "茶"
+        }, {
+          id: "4",
+          name: "ミィ",
+          category: "ミムラ族",
+          color: "赤"
+        }];
+      this.moomins = snifs;
+    }
+  },
 });
 
 /***/ }),

@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/order.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -154,7 +155,7 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <button class="" onclick="location.href='/admin'">表示</button>
+                            <button class="" v-on:click="searchOrders">表示</button>
                         </li>
 
                     </ul>
@@ -169,27 +170,23 @@
             <div>
                 <table class="order_table">
                     <!-- ヘッダー行 -->
-                    <tr>
+                    <thead>
                         <td>品番</td>
                         <td>出荷先</td>
                         @foreach ($caldate as $day)
                             <td class="calendar_cell">{{ $day }}</td>
                         @endforeach
                         <td>備考</td>
-                    </tr>
+                    </thead>
 
                     <!-- ２行目以降 -->
-                    @foreach ($caldate as $day)
-                        <tr>
-                        <td>品番</td>
-                        <td>出荷先</td>
-                        @foreach ($caldate as $day)
-                            <td>{{ $day }}</td>
-                        @endforeach
-                        <td>備考</td>
+                    <tbody>
+                    <tr v-for="order in orders" v-bind:key="order.id">
+                        <td>@{{order.id}}</td>
+                        <td>@{{order.opt_order_no}}</td>
+                        <td>@{{order.delivery_date}}</td>
                     </tr>
-                    @endforeach
-                    
+                    </tbody>
                 </table>
             </div>
             </div>
@@ -206,6 +203,14 @@
                     </div>
                 </div>
             </div>
+
+            <table >
+                <tr v-for="moomin in moomins">
+                    <td v-text="moomin.id"></td>
+                    <td v-text="moomin.name"></td>
+                </tr>
+            </table>
+            <button v-on:click="changeMoomin">チェンジ</button>
 
         </main>
 
