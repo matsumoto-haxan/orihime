@@ -182,9 +182,18 @@
                     <!-- ２行目以降 -->
                     <tbody>
                     <tr v-for="order in orders" v-bind:key="order.id">
-                        <td>@{{order.id}}</td>
-                        <td>@{{order.opt_order_no}}</td>
-                        <td>@{{order.delivery_date}}</td>
+                        <td>@{{order.product_code}}</td>
+                        <td>@{{order.delivery_name}}</td>
+                        <td v-for='dayInt in calenderInt'>
+                            <span v-for='element in order.ship_date'>
+                                <span v-if="element.day == dayInt">
+                                    @{{element.order_length}}
+                                </span>
+                                <span v-else>
+                                </span>
+                            </span>
+                        </td>
+                        <td>@{{order.remarks}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -203,14 +212,6 @@
                     </div>
                 </div>
             </div>
-
-            <table >
-                <tr v-for="moomin in moomins">
-                    <td v-text="moomin.id"></td>
-                    <td v-text="moomin.name"></td>
-                </tr>
-            </table>
-            <button v-on:click="changeMoomin">チェンジ</button>
 
         </main>
 
