@@ -171,29 +171,36 @@
                 <table class="order_table">
                     <!-- ヘッダー行 -->
                     <thead>
-                        <td>品番</td>
-                        <td>出荷先</td>
-                        @foreach ($caldate as $day)
-                            <td class="calendar_cell">{{ $day }}</td>
-                        @endforeach
-                        <td>備考</td>
+                        <tr>
+                            <td>品番</td>
+                            <td>出荷先</td>
+                            @foreach ($caldate as $day)
+                                <td class="calendar_cell">{{ $day }}</td>
+                            @endforeach
+                        </tr>
                     </thead>
 
                     <!-- ２行目以降 -->
                     <tbody>
-                    <tr v-for="order in orders" v-bind:key="order.id">
+                    <tr v-for="order in orders">
                         <td>@{{order.product_code}}</td>
                         <td>@{{order.delivery_name}}</td>
-                        <td v-for='dayInt in calenderInt'>
-                            <span v-for='element in order.ship_date'>
-                                <span v-if="element.day == dayInt">
-                                    @{{element.order_length}}
-                                </span>
-                                <span v-else>
-                                </span>
-                            </span>
-                        </td>
-                        <td>@{{order.remarks}}</td>
+                        <template v-for='dayInt in calenderInt'>
+                            <template v-for='element in order.delivery_date'>
+                                <template v-if="element.day == dayInt">
+                                    <template v-if="element.order_id">
+                                        <td v-on:click="showOrder(element.order_id)"
+                                            :class="lackingColor(element.lacking_flg)" >
+                                            @{{element.order_length}}
+                                        </td>
+                                    </template>
+                                    <template v-else>
+                                        <td >
+                                        </td>
+                                    </template>
+                                </template>
+                            </template>
+                        </template>
                     </tr>
                     </tbody>
                 </table>

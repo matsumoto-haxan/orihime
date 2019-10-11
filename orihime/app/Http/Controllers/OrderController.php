@@ -95,14 +95,19 @@ class OrderController extends Controller
      */
     public function search(Request $request)
     {
-        // $orders = Order::all();
-
-
+        // ①DBから取得
         $orders = DB::table('orders')
+        ->select('*')
+        ->addSelect('orders.id as order_id')
         ->join('products', 'orders.product_id','=','products.id')
         ->join('companies', 'orders.company_id','=','companies.id')
         ->get();
 
+        // ↓確認
+        // return $orders;
+
+
+        // ②レコードを製品・納品先毎に集約する
         $results = array();
         $isDatePushed = 0;
 
@@ -118,22 +123,21 @@ class OrderController extends Controller
                 $r_prd = $result->product_id;
                 $r_cmp = $result->company_id;
 
-                // すでに返却データに登録されていたら、ship_dateに追加してbreak
+                // すでに返却データに登録されていた場合
                 if($o_prd == $r_prd && $o_cmp == $r_cmp){
-                    if ($order->ship_date) {
-                        $od = array(
-                            'day'=>date('j', $order->ship_date),
-                            'order_length'=>$order->order_length,
-                            'lacking_flg'=>$order->lacking_flg,
-                        );
-                    } else {
-                        $od = array(
-                            'day'=>date('j', $order->exp_ship_date),
-                            'order_length'=>$order->order_length,
-                            'lacking_flg'=>$order->lacking_flg,
-                        );
+
+                    $dayStr = date('j', strtotime($order->delivery_date));
+
+                    // 登録済みの1~31を回す
+                    foreach($result->delivery_date as &$dd){
+                        // 該当する日付の配列を検索結果の情報で上書き
+                        if($dd['day'] == $dayStr){
+                            $dd['order_id'] = $order->order_id;
+                            $dd['order_length'] = $order->order_length;
+                            $dd['lacking_flg'] = $order->lacking_flg;
+                            break;
+                        }
                     }
-                    array_push($result->ship_date, $od);
                     $isDatePushed += 1;
                     break;
                 }
@@ -145,28 +149,39 @@ class OrderController extends Controller
                 $tmpOrder->company_id = $order->company_id;
                 $tmpOrder->product_code = $order->product_code;
                 $tmpOrder->delivery_name = $order->delivery_name;
-                if($order->ship_date){
+                
+                $tmpOrder->delivery_date = array();                
+                $dayStr = date('j', strtotime($order->delivery_date));
+
+                // 1~31まで回す
+                for ($i = 1; $i <= 31; $i++) {
+                    // カラの日付配列を作成
                     $od = array(
-                        'day' => date('j', strtotime($order->ship_date)),
-                        'order_length' => $order->order_length,
-                        'lacking_flg' => $order->lacking_flg
+                        'order_id'     => '',
+                        'day'          => $i,
+                        'order_length' => '',
+                        'lacking_flg'  => 0,
                     );
-                }else{
-                    $od = array(
-                        'day'=>date('j', strtotime($order->exp_ship_date)),
-                        'order_length'=>$order->order_length,
-                        'lacking_flg'=>$order->lacking_flg,
-                    );
+
+                    // 該当する日付の配列を検索結果の情報で上書き
+                    if($dayStr == $i){
+                        
+                        $od = array(
+                            'order_id'     => $order->order_id,
+                            'day'          => $dayStr,
+                            'order_length' => $order->order_length,
+                            'lacking_flg'  => $order->lacking_flg,
+                        );
+                    }
+                    array_push($tmpOrder->delivery_date, $od);
                 }
-                $tmpOrder->ship_date = array();
-                array_push($tmpOrder->ship_date, $od);
-                $tmpOrder->remarks = $order->remarks;
+
+                array_push($results, $tmpOrder);
             }
-            array_push($results, $tmpOrder);
         }
 
         return $results;
-        
-        
     }
+
+
 }

@@ -49365,7 +49365,10 @@ var app = new Vue({
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
       21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
-    ]
+    ],
+    newOrderData: {
+      
+    }
   },
   mounted() {
     /*
@@ -49378,19 +49381,20 @@ var app = new Vue({
       */
   },
   methods: {
-    /*
-    fetchTodos: function () {
-      axios.get('/api/get').then((res) => {
-        this.todos = res.data
-      });
-    },
-    */
     searchOrders: function () {
       axios.get('/api/order/search').then((res) => {
         //console.log(res.data);
         // alert(res.data)
         this.orders = res.data
       });
+    },
+    lackingColor: function (flg) {
+      if (flg === 1) {
+        return 'lackingCell';
+      }
+    },
+    showOrder: function (order_id) {
+      alert(order_id);
     }
   },
 });

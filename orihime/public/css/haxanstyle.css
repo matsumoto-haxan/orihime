@@ -14,9 +14,12 @@
 
 .calendar_cell{
   width: 20px;
+  font-size: 5px;
+  text-align: center;
 }
 
-table.order_table > tbody > tr > td{
+table.order_table > tbody > tr > td,
+table.order_table > thead > tr > td {
   border: 1px solid #696969;
   text-align: center;
 }
@@ -124,4 +127,8 @@ table.order_table > tbody > tr > td{
 	opacity: 1;
 	transform: scale(1);
 	transition: opacity 0.5s;
+}
+
+.lackingCell{
+	background-color: lightcoral;
 }
