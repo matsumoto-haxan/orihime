@@ -49366,8 +49366,42 @@ var app = new Vue({
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
       21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     ],
+    // 値はダミーです。画面表示時に非同期で取得
+    customer_list: [
+      { key: '2A2C', value: '帝人フロンティア' },
+      { key: 'SAI01', value: 'セージ・オートモーティブ・インテリア' }
+    ],
+    delivery_list: [
+      { key: '5493', value: '東名化成（株）三重' },
+      { key: 'th001', value: '田島縫製（鈴鹿事業所）' }
+    ],
+    material_list: [
+      { key: 'TR640A', value: 'TR640A' },
+      { key: 'TR640AW', value: 'TR640AW' },
+      { key: 'TR662A', value: 'TR662A' }
+    ],
+    color_list: [
+      { key: 'Y605', value: 'Y605' },
+      { key: 'B603', value: 'B603' }
+    ],
+    date_list: [
+      { key: '201908', value: '2019年8月' },
+      { key: '201909', value: '2019年9月' },
+      { key: '201910', value: '2019年10月' },
+      { key: '201911', value: '2019年11月' }
+    ],
+    // 更新と共通化するかも
     newOrderData: {
-      
+      newCustomer_code: '',
+      newDelivery_code: '',
+      newOpt_order_no: '',
+      newMaterial_code: '',
+      newColor_code: '',
+      newDelivery_date: '',
+      newOrder_length: '',
+      newRoll_amount: '',
+      newRemarks: '',
+      newLacking_flg: ''
     }
   },
   mounted() {
@@ -49395,6 +49429,16 @@ var app = new Vue({
     },
     showOrder: function (order_id) {
       alert(order_id);
+    },
+    sendNewOrder: function () {
+      this.$toasted.show('hello billo');
+      alert(this.newOrderData.newCustomer_code);
+      // TODO: とりあえずGETで通す
+      //axios.get('/api/order/create').then((res) => {
+        //console.log(res.data);
+        // alert(res.data)
+        //this.orders = res.data
+      //});
     }
   },
 });

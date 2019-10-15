@@ -35,39 +35,35 @@
 		            <h2>注文新規登録</h2>
                     <p>
                         契約先
-                        <select>
-                            @foreach($customer_list as $index => $name)
-                                <option value="{{ $index }}">{{ $name }}</option>
-                            @endforeach
+                        <select v-model="newOrderData.newCustomer_code">
+                            <option v-for="option in customer_list" v-bind:value="option.key">
+                                @{{ option.value }}
+                            </option>
                         </select>
                     </p>
                     <p>
                         出荷先
-                        <select>
-                            @foreach($delivery_list as $index => $name)
-                                <option value="{{ $index }}">{{ $name }}</option>
-                            @endforeach
+                        <select v-model="newOrderData.newDelivery_code">
+                            <option v-for="option in delivery_list" v-bind:value="option.key">
+                                @{{ option.value }}
+                            </option>
                         </select>
                     </p>
                     <p>
-                        気付
-                        <input type="text">
-                    </p>
-                    <p>
                         出荷指図No.
-                        <input type="text">
+                        <input type="text" v-model="newOrderData.newOpt_order_no">
                     </p>
                     <p>
                         品番
-                        <select>
-                            @foreach($material_list as $index => $name)
-                                <option value="{{ $index }}">{{ $name }}</option>
-                            @endforeach
+                        <select v-model="newOrderData.newMaterial_code">
+                            <option v-for="option in material_list" v-bind:value="option.key">
+                                @{{ option.value }}
+                            </option>
                         </select>
                     </p>
                     <p>
                         色番
-                        <select>
+                        <select v-model="newOrderData.newColor_code">
                             @foreach($color_list as $index => $name)
                                 <option value="{{ $index }}">{{ $name }}</option>
                             @endforeach
@@ -75,22 +71,26 @@
                     </p>
                     <p>
                         納品日
-                        <input type="date">
+                        <input type="date" v-model="newOrderData.newDelivery_date">
                     </p>
                     <p>
                         反数
-                        <input type="number">
+                        <input type="number" v-model="newOrderData.newRoll_amount">
+                    </p>
+                    <p>
+                        メートル数
+                        <input type="number" v-model="newOrderData.newOrder_length">
                     </p>
                     <p>
                         備考
-                        <input type="text">
+                        <input type="text" v-model="newOrderData.newRemarks">
                     </p>
                     <p>
                         アラート
-                        <input type="checkbox" name="check">
+                        <input type="checkbox" name="check" v-model="newOrderData.newLacking_flg">
                     </p>
                     <p>
-                        <input type="button" value="送信">
+                        <input type="button" value="送信" v-on:click="sendNewOrder">
                     </p>
 		        </div>
 	        </div>
