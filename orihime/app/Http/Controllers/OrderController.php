@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Order;
+use App\Product;
+use App\Company;
+
+
 
 // ↓クエリビルダでSQLを発行するため
 // ロジッククラスに切り出すかも
@@ -69,24 +73,72 @@ class OrderController extends Controller
         }
 
 
-
-
-        // 適当に変数に値を入れる
-        $message = 'hello';
-        $testarray = ['yeah', 'welcome!'];
-
         // compactメソッドに変数名をStringで渡すと勝手に送ってくれる
-        return view('order', compact('message', 'testarray', 'customer_list', 'delivery_list', 'material_list', 'color_list', 'date_list', 'caldate'));
+        return view('order', compact('customer_list', 'delivery_list', 'material_list', 'color_list', 'date_list', 'caldate'));
         
     }
 
     /**
      * 新規作成API
      * TODO: あとで別のコントローラに変えるかも
+     * TODO: product_id,company_idの特定が業務上できることを確認する
+     * TODO: ベターなバリデーションの実装を確認する
      */
-    public function create()
+    public function create(Request $request)
     {
-        return "create";
+        $order = new Order;
+
+        $order->product_id = 
+            getProductId(
+                $request->product_code,
+                $request->material_code,
+                $request->color_code );
+
+        $company = 
+            getCompanyId(
+                $request->customer_code,
+                $request->delivery_code,
+                $request->enduser_code );
+        $order->company_id = $company->id;
+
+        $order->opt_order_no = $request->opt_order_no;
+        $order->delivery_date = $request->delivery_date;
+
+        $calcStr = '+' + $company->delivery_lag + ' day';
+        $expDate = date("Y-m-d", $request->delivery_date.strtotime($calcStr));
+        $order->exp_ship_date = $expDate;
+
+        // $order->ship_date = '';
+        $order->order_length = $request->order_length;
+        // $order->result_length = '';
+        $order->lacking_flg = $request->lacking_flg;
+        $order->remarks = $request->remarks;
+        $order->user_id = Auth::user()->id;
+
+        $order->save();
+
+        return $request->newCustomer_code;
+    }
+
+    public function getProduct(string $product_code,string $material_code, string $color_code){
+        $product = Product::select('id')
+        ->where('product_code', '=', $product_code)
+        ->where('material_code', '=', $material_code)
+        ->where('color_code', '=', $color_code)
+        ->first();
+        return $product;
+    }
+
+    public function getCompanyId(string $customer_code,string $delivery_code, string $enduser_code){
+        $company = Company::select('id')
+        ->where('customer_code', '=', $customer_code)
+        ->where('delivery_code', '=', $delivery_code)
+        ->where('enduser_code', '=', $enduser_code)
+        ->first();
+        return $company->id;
+    }
+
+    private function getExpShipDate(string $delivery_date){
     }
 
     /**

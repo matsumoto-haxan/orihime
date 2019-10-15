@@ -64,9 +64,9 @@
                     <p>
                         色番
                         <select v-model="newOrderData.newColor_code">
-                            @foreach($color_list as $index => $name)
-                                <option value="{{ $index }}">{{ $name }}</option>
-                            @endforeach
+                            <option v-for="option in color_list" v-bind:value="option.key">
+                                @{{ option.value }}
+                            </option>
                         </select>
                     </p>
                     <p>
@@ -215,7 +215,7 @@
                         <div class="card cardmargin">
                     <div class="card-header">発注内容</div>
                     <div class="card-body">
-                        <p>{{ $message }}</p>
+                        <p></p>
                     </div>
                 </div>
             </div>

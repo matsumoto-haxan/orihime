@@ -49356,10 +49356,10 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+
 var app = new Vue({
   el: '#app',
   data: {
-    // comedians: {}
     orders: {},
     calenderInt: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -49404,16 +49404,7 @@ var app = new Vue({
       newLacking_flg: ''
     }
   },
-  mounted() {
-    /*
-    var self = this;
-    var url = '/api/order/search';
-    axios.get(url)
-      .then(function (response) {
-        self.comedians = response.data;
-      });
-      */
-  },
+  mounted() {},
   methods: {
     searchOrders: function () {
       axios.get('/api/order/search').then((res) => {
@@ -49431,14 +49422,36 @@ var app = new Vue({
       alert(order_id);
     },
     sendNewOrder: function () {
-      this.$toasted.show('hello billo');
-      alert(this.newOrderData.newCustomer_code);
-      // TODO: とりあえずGETで通す
-      //axios.get('/api/order/create').then((res) => {
-        //console.log(res.data);
-        // alert(res.data)
-        //this.orders = res.data
-      //});
+      /*
+        this.newOrderData.newCustomer_code + " / " +
+        this.newOrderData.newDelivery_code + " / " +
+        this.newOrderData.newOpt_order_no + " / " +
+        this.newOrderData.newMaterial_code + " / " +
+        this.newOrderData.newColor_code + " / " +
+        this.newOrderData.newDelivery_date + " / " +
+        this.newOrderData.newOrder_length + " / " +
+        this.newOrderData.newRoll_amount + " / " +
+        this.newOrderData.newRemarks + " / " +
+        this.newOrderData.newLacking_flg
+      */
+      
+      axios.post('/api/order/create', {
+        customer_code: this.newOrderData.newCustomer_code,
+        delivery_code: this.newOrderData.newDelivery_code,
+        opt_order_no: this.newOrderData.newOpt_order_no,
+        material_code: this.newOrderData.newMaterial_code,
+        color_code: this.newOrderData.newColor_code,
+        delivery_date: this.newOrderData.newDelivery_date,
+        order_length: this.newOrderData.newOrder_length,
+        roll_amount: this.newOrderData.newRoll_amount,
+        remarks: this.newOrderData.newRemarks,
+        lacking_flg: this.newOrderData.newLacking_flg
+      })
+        .then((res) => {
+          console.log(res.data);
+          alert(res.data);
+          this.orders = res.data;
+      });
     }
   },
 });

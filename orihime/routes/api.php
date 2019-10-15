@@ -23,7 +23,6 @@ Route::get('/order/search', 'OrderController@search')->name('order_search');
 
 
 // 注文新規登録
-// TODO: とりあえずGETで作成。疎通後POSTに変更
-Route::get('/order/create', 'OrderController@create')->name('order_create');
+Route::post('/order/create', 'OrderController@create')->name('order_create');
 
 
