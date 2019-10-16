@@ -35,7 +35,7 @@
 		            <h2>注文新規登録</h2>
                     <p>
                         契約先
-                        <select v-model="newOrderData.newCustomer_code">
+                        <select v-model="newOrderData.newCustomer_code" v-on:blur="setDeliveryList">
                             <option v-for="option in customer_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -43,7 +43,7 @@
                     </p>
                     <p>
                         出荷先
-                        <select v-model="newOrderData.newDelivery_code">
+                        <select v-model="newOrderData.newDelivery_code" v-on:blur="getProductList">
                             <option v-for="option in delivery_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -55,6 +55,14 @@
                     </p>
                     <p>
                         品番
+                        <select v-model="newOrderData.newProduct_code">
+                            <option v-for="option in product_list" v-bind:value="option.key">
+                                @{{ option.value }}
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        生番
                         <select v-model="newOrderData.newMaterial_code">
                             <option v-for="option in material_list" v-bind:value="option.key">
                                 @{{ option.value }}

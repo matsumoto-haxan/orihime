@@ -49361,6 +49361,13 @@ var app = new Vue({
   el: '#app',
   data: {
     orders: {},
+    companyList: {},
+    productList: {},
+    customerList: {},
+    deliveryList: {},
+    materialList: {},
+    fublicList: {},
+    colorList: {},
     calenderInt: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -49368,17 +49375,16 @@ var app = new Vue({
     ],
     // 値はダミーです。画面表示時に非同期で取得
     customer_list: [
-      { key: '2A2C', value: '帝人フロンティア' },
-      { key: 'SAI01', value: 'セージ・オートモーティブ・インテリア' }
+      { key: '', value: '' }
     ],
     delivery_list: [
-      { key: '5493', value: '東名化成（株）三重' },
-      { key: 'th001', value: '田島縫製（鈴鹿事業所）' }
+      { key: '', value: ''}
+    ],
+    product_list: [
+      { key: '', value: ''}
     ],
     material_list: [
-      { key: 'TR640A', value: 'TR640A' },
-      { key: 'TR640AW', value: 'TR640AW' },
-      { key: 'TR662A', value: 'TR662A' }
+      { key: '', value: ''  }
     ],
     color_list: [
       { key: 'Y605', value: 'Y605' },
@@ -49395,6 +49401,7 @@ var app = new Vue({
       newCustomer_code: '',
       newDelivery_code: '',
       newOpt_order_no: '',
+      newProduct_code: '',
       newMaterial_code: '',
       newColor_code: '',
       newDelivery_date: '',
@@ -49404,7 +49411,9 @@ var app = new Vue({
       newLacking_flg: ''
     }
   },
-  mounted() {},
+  mounted() {
+    this.getCompanyList();
+  },
   methods: {
     searchOrders: function () {
       axios.get('/api/order/search').then((res) => {
@@ -49421,19 +49430,87 @@ var app = new Vue({
     showOrder: function (order_id) {
       alert(order_id);
     },
+
+    /* 入力用リストデータ取得 */
+    getCompanyList: function () {
+      axios.get('/api/order/companylist').then((res) => {
+        this.companyList = res.data;
+        this.setCostomerList();
+      });
+    },
+    setCostomerList: function () {
+      var result = [];
+      this.companyList.forEach(function (cmp) {
+        var tmp = {
+          key: cmp.customer_code,
+          value: cmp.customer_name
+        };
+        if (!result.some(function (value) {
+          return value.key == cmp.customer_code;
+        })) {
+          result.push(tmp);
+        }
+      });
+      this.customer_list = result;
+    },
+    setDeliveryList: function () {
+      var result = [];
+      // alert(this.newOrderData.newCustomer_code);
+      var selectedCode = this.newOrderData.newCustomer_code;
+      this.companyList.forEach(function (cmp) {
+        if (cmp.customer_code === selectedCode) {
+          var tmp = {
+            key: cmp.id,
+            value: cmp.delivery_name
+          };
+          /*
+          // customer_codeとdelivery_codeで一意に決まるはずなので、
+          // 以下処理はいらないハズだが、ちょっと取っておきます
+          if (!result.some(function (value) {
+            return value.key == cmp.delivery_code;
+          })) {
+            result.push(tmp);
+          }
+          */
+          result.push(tmp);
+        }
+      });
+      this.delivery_list = result;
+    },
+
+    getProductList: function () {
+      axios.get('/api/order/productlist',{
+        params: {
+          company_id: this.newOrderData.newDelivery_code
+        }
+      }).then((res) => {
+        //console.log(res.data);
+        this.productList = res.data;
+        this.setProductList();
+      });
+    },
+    setProductList: function () {
+      var result = [];
+      this.productList.forEach(function (prd) {
+        var tmp = {
+          key: prd.product_code,
+          value: prd.product_code
+        };
+        if (!result.some(function (value) {
+          return value.key == prd.product_code;
+        })) {
+          result.push(tmp);
+        }
+      });
+      this.product_list = result;
+    },
+    setMaterialList: function () {
+
+    },
+    setColorList: function () {
+
+    },
     sendNewOrder: function () {
-      /*
-        this.newOrderData.newCustomer_code + " / " +
-        this.newOrderData.newDelivery_code + " / " +
-        this.newOrderData.newOpt_order_no + " / " +
-        this.newOrderData.newMaterial_code + " / " +
-        this.newOrderData.newColor_code + " / " +
-        this.newOrderData.newDelivery_date + " / " +
-        this.newOrderData.newOrder_length + " / " +
-        this.newOrderData.newRoll_amount + " / " +
-        this.newOrderData.newRemarks + " / " +
-        this.newOrderData.newLacking_flg
-      */
       
       axios.post('/api/order/create', {
         customer_code: this.newOrderData.newCustomer_code,

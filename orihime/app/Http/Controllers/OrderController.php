@@ -78,67 +78,96 @@ class OrderController extends Controller
         
     }
 
+public function create(){
+    $pd = Product::
+    where('product_code', '=', 'TR640AW')
+    ->first();
+
+return $pd->id;
+}
+
     /**
      * 新規作成API
      * TODO: あとで別のコントローラに変えるかも
      * TODO: product_id,company_idの特定が業務上できることを確認する
      * TODO: ベターなバリデーションの実装を確認する
      */
-    public function create(Request $request)
+    public function create_bk(Request $request)
     {
         $order = new Order;
 
-        $order->product_id = 
-            getProductId(
+        
+        $product = $this->getProduct(
                 $request->product_code,
                 $request->material_code,
                 $request->color_code );
+        $order->product_id = $product->id;
+/*
 
-        $company = 
-            getCompanyId(
+
+        $company = $this->getCompany(
                 $request->customer_code,
                 $request->delivery_code,
                 $request->enduser_code );
         $order->company_id = $company->id;
-
+*/
         $order->opt_order_no = $request->opt_order_no;
         $order->delivery_date = $request->delivery_date;
 
-        $calcStr = '+' + $company->delivery_lag + ' day';
-        $expDate = date("Y-m-d", $request->delivery_date.strtotime($calcStr));
-        $order->exp_ship_date = $expDate;
+        // $calcStr = '+' + $company->delivery_lag + ' day';
+        // $expDate = date("Y-m-d", $request->delivery_date.strtotime($calcStr));
+        // $order->exp_ship_date = $expDate;
 
-        // $order->ship_date = '';
+        // $order->ship_date = ''; 新規作成時には空欄
         $order->order_length = $request->order_length;
-        // $order->result_length = '';
+        // $order->result_length = ''; 新規作成時には空欄
         $order->lacking_flg = $request->lacking_flg;
         $order->remarks = $request->remarks;
-        $order->user_id = Auth::user()->id;
+        // $order->user_id = Auth::user()->id;
 
         $order->save();
 
         return $request->newCustomer_code;
     }
 
-    public function getProduct(string $product_code,string $material_code, string $color_code){
-        $product = Product::select('id')
-        ->where('product_code', '=', $product_code)
+    function getProduct(?string $product_code, ?string $material_code, ?string $color_code){
+        $product = Product::
+        where('product_code', '=', $product_code)
         ->where('material_code', '=', $material_code)
         ->where('color_code', '=', $color_code)
         ->first();
-        return $product;
+        $result = array(
+            'id' => $product->id,
+            'product_code' => $product->product_code,
+            'material_code' => $product->material_code,
+            'color_code' => $product->color_code,
+            'roll_length' => $product->roll_length
+        );
+        return $result;
     }
 
-    public function getCompanyId(string $customer_code,string $delivery_code, string $enduser_code){
-        $company = Company::select('id')
-        ->where('customer_code', '=', $customer_code)
+    function getCompany(?string $customer_code, ?string $delivery_code, ?string $enduser_code){
+        $company = Company::
+        where('customer_code', '=', $customer_code)
         ->where('delivery_code', '=', $delivery_code)
         ->where('enduser_code', '=', $enduser_code)
         ->first();
-        return $company->id;
+        return $company;
     }
 
-    private function getExpShipDate(string $delivery_date){
+
+
+    
+    public function getCompanylist(){
+        return Company::get();
+    }
+
+    public function getProductlist(Request $request){
+        return Product::
+        select('*')
+        ->join('agreements', 'agreements.product_id','=','products.id')
+        ->where('company_id', '=', $request->company_id)
+        ->get();
     }
 
     /**
