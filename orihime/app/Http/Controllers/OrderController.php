@@ -81,42 +81,49 @@ class OrderController extends Controller
         
     }
 
-public function create_test(){
-    $pd = Product::
-    where('product_code', '=', 'TR640AW')
-    ->first();
-return $pd->id;
-}
+
 
     /**
-     * 新規作成API
+     * 新規登録API
      * TODO: あとで別のコントローラに変えるかも
-     * TODO: product_id,company_idの特定が業務上できることを確認する
-     * TODO: ベターなバリデーションの実装を確認する
      */
     public function create(Request $request)
     {
-    
+
         $order = new Order;
+        try{
+            $order->product_id    = $request->product_id;
+            $order->company_id    = $request->company_id;
+            $order->opt_order_no  = $request->opt_order_no;
+            $order->delivery_date = $request->delivery_date;
+            $order->exp_ship_date = $request->exp_ship_date;
+            $order->order_length  = $request->order_length;
+            $order->roll_amount   = $request->roll_amount;
+            $order->lacking_flg   = $request->lacking_flg;
+            $order->remarks       = $request->remarks;
+            $order->user_id       = Auth::id();
 
-        $order->product_id    = $request->product_id;
-        $order->company_id    = $request->company_id;
-        $order->opt_order_no  = $request->opt_order_no;
-        $order->delivery_date = $request->delivery_date;
-        $order->exp_ship_date = $request->exp_ship_date;
+            $order->save();
+            return '200';
 
-        // $order->ship_date = ''; 新規作成時には空欄
-        $order->order_length = $request->order_length;
-        // $order->result_length = ''; 新規作成時には空欄
-        $order->lacking_flg = $request->lacking_flg;
-        $order->remarks     = $request->remarks;
-        $order->user_id     = Auth::id();
-
-        $order->save();
-
-        return 'finish';
-
+        } catch(Exception $ex){
+            return $ex;
+        }
     }
+
+    /**
+     *
+     */
+    function getCompany(?string $customer_code, ?string $delivery_code, ?string $enduser_code)
+    {
+        $company = Company::
+            where('customer_code', '=', $customer_code)
+            ->where('delivery_code', '=', $delivery_code)
+            ->where('enduser_code', '=', $enduser_code)
+            ->first();
+        return $company;
+    }
+
 
     /**
      * 
@@ -135,18 +142,6 @@ return $pd->id;
             'roll_length' => $product->roll_length
         );
         return $result;
-    }
-
-    /**
-     * 
-     */
-    function getCompany(?string $customer_code, ?string $delivery_code, ?string $enduser_code){
-        $company = Company::
-        where('customer_code', '=', $customer_code)
-        ->where('delivery_code', '=', $delivery_code)
-        ->where('enduser_code', '=', $enduser_code)
-        ->first();
-        return $company;
     }
 
     /**
@@ -285,6 +280,23 @@ return $pd->id;
         }
 
         return $results;
+    }
+
+
+    /**
+     * 注文詳細取得API
+     */
+    public function getDetail(Request $request){
+
+        $order = DB::table('orders')
+        ->select('*')
+        ->addSelect('orders.id as order_id')
+        ->join('products', 'orders.product_id', '=', 'products.id')
+        ->join('companies', 'orders.company_id', '=', 'companies.id')
+        ->where('orders.id', '=', $request->order_id)
+        ->get();
+
+        return $order;
     }
 
 

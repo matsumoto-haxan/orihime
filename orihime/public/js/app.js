@@ -49412,16 +49412,42 @@ var app = new Vue({
       newRoll_amount: '',
       newRemarks: '',
       newLacking_flg: ''
+    },
+    errorMessage: {
+      company: '',
+      product: '',
+      delivery_date: '',
+      order_length: '',
+      roll_amount: '',
+    },
+    detail: {
+      order_id: '',
+      company_id: '',
+      product_id: '',
+      customer_name: '',
+      delivery_name: '',
+      opt_order_no: '',
+      product_code: '',
+      material_code: '',
+      color_code: '',
+      delivery_date: '',
+      exp_ship_date: '',
+      ship_date: '',
+      order_length: '',
+      result_length: '',
+      roll_amount: '',
+      remarks: '',
+      lacking_flg: '',
     }
   },
   mounted() {
     this.getCompanyList();
   },
   methods: {
+    /* 一覧検索 */
     searchOrders: function () {
+      // TODO:検索機能つける
       axios.get('/api/order/search').then((res) => {
-        //console.log(res.data);
-        // alert(res.data)
         this.orders = res.data
       });
     },
@@ -49430,8 +49456,34 @@ var app = new Vue({
         return 'lackingCell';
       }
     },
+
+    /* 詳細表示 */
     showOrder: function (order_id) {
-      alert(order_id);
+      axios.get('/api/order/detail',{
+        params:
+          {
+            order_id: order_id,
+          }})
+        .then((res) => {
+          var resultData = res.data[0];
+          this.detail.order_id = resultData.order_id;
+          this.detail.company_id = resultData.company_id;
+          this.detail.product_id = resultData.product_id;
+          this.detail.customer_name = resultData.customer_name;
+          this.detail.delivery_name = resultData.delivery_name;
+          this.detail.opt_order_no = resultData.opt_order_no;
+          this.detail.product_code = resultData.product_code;
+          this.detail.material_code = resultData.material_code;
+          this.detail.color_code = resultData.color_code;
+          this.detail.delivery_date = resultData.delivery_date;
+          this.detail.exp_ship_date = resultData.exp_ship_date;
+          this.detail.ship_date = resultData.ship_date;
+          this.detail.order_length = resultData.order_length;
+          this.detail.result_length = resultData.result_length;
+          this.detail.roll_amount = resultData.roll_amount;
+          this.detail.remarks = resultData.remarks;
+          this.detail.lacking_flg = resultData.lacking_flg;
+      });
     },
 
     /* 入力用リストデータ取得 */
@@ -49584,7 +49636,6 @@ var app = new Vue({
           this.exp_ship_date = yeh + '/' + mnt + '/' + dte;
           this.newOrderData.newExp_ship_date = yeh + '-' + mnt + '-' + dte
         });
-
     },
     setRoll: function () {
       var result;
@@ -49595,23 +49646,80 @@ var app = new Vue({
       this.newOrderData.newRoll_amount = result;
     },
     sendNewOrder: function () {
+
+      if (this.checkForm()) {
+        axios.post('/api/order/create', {
+          product_id: this.newOrderData.newProduct_id,
+          company_id: this.newOrderData.newCompany_id,
+          opt_order_no: this.newOrderData.newOpt_order_no,
+          delivery_date: this.newOrderData.newDelivery_date,
+          exp_ship_date: this.newOrderData.newExp_ship_date,
+          order_length: this.newOrderData.newOrder_length,
+          roll_amount: this.newOrderData.newRoll_amount,
+          remarks: this.newOrderData.newRemarks,
+          lacking_flg: this.newOrderData.newLacking_flg
+        })
+          .then((res) => {
+            switch (res.data) {
+              case 200:
+                alert('登録しました');
+                break;
+              default:
+                alert('サーバ内で何かエラーがありました。以下をシステム管理者に伝えてください。：' + res.data);
+            }
+          });  
+      }
+    },
+    checkForm: function(){
+      var isClear = true;
+      if (!this.newOrderData.newProduct_id) {
+        this.errorMessage.product = 'もう一度製品情報を選択してください';
+        isClear = false;
+      }
+
+      if (!this.newOrderData.newCompany_id) {
+        this.errorMessage.company = 'もう一度会社情報を選択してください';
+        isClear = false;
+      }
+
+      if (!this.newOrderData.newDelivery_date) {
+        this.errorMessage.delivery_date = '納品日を入力してください';
+        isClear = false;
+      }
       
-      axios.post('/api/order/create', {
-        product_id: this.newOrderData.newProduct_id,
-        company_id: this.newOrderData.newCompany_id,
-        opt_order_no: this.newOrderData.newOpt_order_no,
-        delivery_date: this.newOrderData.newDelivery_date,
-        exp_ship_date: this.newOrderData.newExp_ship_date,
-        order_length: this.newOrderData.newOrder_length,
-        remarks: this.newOrderData.newRemarks,
-        lacking_flg: this.newOrderData.newLacking_flg
-      })
-        .then((res) => {
-          console.log(res.data);
-          alert(res.data);
-          this.orders = res.data;
-      });
-    }
+      if (!this.newOrderData.newOrder_length) {
+        this.errorMessage.order_length = 'メートル数を入力してください';
+        isClear = false;
+      } else if (!this.checkNum(this.newOrderData.newOrder_length)) {
+        this.errorMessage.order_length = 'メートル数は半角数字で入力してください';
+        isClear = false;
+      }
+
+      if (!this.newOrderData.newRoll_amount) {
+        this.errorMessage.roll_amount = '反数を入力してください';
+        isClear = false;
+      } else if (!this.checkNum(this.newOrderData.newRoll_amount)) {
+        this.errorMessage.roll_amount = '反数は半角数字で入力してください';
+        isClear = false;
+      }
+      return isClear;
+    },
+    checkNum: function (inputdata) {
+      var re = /^[0-9]*$/
+      return re.test(inputdata);
+    },
+    updSetExpShipDate: function () {
+
+    },
+    updSetRoll: function(){
+
+    },
+    sendUpdateOrder: function(){
+
+    },
+    sendDeleteOrder: function () {
+
+    },
   },
 });
 

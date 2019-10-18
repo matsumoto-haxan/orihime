@@ -84,7 +84,7 @@
                     </p>
                     <p>
                         メートル数
-                        <input type="number" v-model="newOrderData.newOrder_length" v-on:blur="setRoll">
+                        <input type="number" v-model="newOrderData.newOrder_length" v-on:blur="setRoll">m
                     </p>
                     <p>
                         反数
@@ -225,7 +225,63 @@
                         <div class="card cardmargin">
                     <div class="card-header">発注内容</div>
                     <div class="card-body">
-                        <p></p>
+                    <p>
+                        契約先
+                        @{{ detail.customer_name}}
+                    </p>
+                    <p>
+                        出荷先
+                        @{{ detail.delivery_name }}
+                    </p>
+                    <p>
+                        出荷指図No.
+                        @{{ detail.opt_order_no }}
+                    </p>
+                    <p>
+                        品番
+                        @{{ detail.product_code }}
+                    </p>
+                    <p>
+                        生番
+                        @{{ detail.material_code }}
+                    </p>
+                    <p>
+                        色番
+                        @{{ detail.color_code }}
+                    </p>
+                    <p>
+                        納品日
+                        <input type="date" v-model="detail.delivery_date" v-on:blur="updSetExpShipDate">
+                        （発送予定日：@{{ detail.exp_ship_date }}）
+                    </p>
+                        発送日
+                        <input type="date" v-model="detail.ship_date">
+                    </p>
+                    <p>
+                        オーダーメートル数
+                        <input type="number" v-model="detail.order_length" v-on:blur="updSetRoll">m
+                    </p>
+                    <p>
+                        結果メートル数
+                        <input type="number" v-model="detail.result_length">m
+                    </p>
+                    <p>
+                        反数
+                        <input type="number" v-model="detail.roll_amount">
+                        （ 一反：@{{ detail.roll_length }}m ）
+                    </p>
+                    <p>
+                        備考
+                        <input type="text" v-model="detail.remarks">
+                    </p>
+                    <p>
+                        アラート
+                        <input type="checkbox" name="check" v-model="detail.lacking_flg">
+                    </p>
+                    <p>
+                        <input type="button" value="更新" v-on:click="sendUpdateOrder">
+                        <input type="button" value="削除" v-on:click="sendDeleteOrder">
+                    </p>
                     </div>
                 </div>
             </div>
