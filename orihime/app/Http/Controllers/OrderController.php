@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Order;
 use App\Product;
 use App\Company;
+use App\Calendar;
+
 
 
 
@@ -78,11 +81,10 @@ class OrderController extends Controller
         
     }
 
-public function create(){
+public function create_test(){
     $pd = Product::
     where('product_code', '=', 'TR640AW')
     ->first();
-
 return $pd->id;
 }
 
@@ -92,44 +94,33 @@ return $pd->id;
      * TODO: product_id,company_idの特定が業務上できることを確認する
      * TODO: ベターなバリデーションの実装を確認する
      */
-    public function create_bk(Request $request)
+    public function create(Request $request)
     {
+    
         $order = new Order;
 
-        
-        $product = $this->getProduct(
-                $request->product_code,
-                $request->material_code,
-                $request->color_code );
-        $order->product_id = $product->id;
-/*
-
-
-        $company = $this->getCompany(
-                $request->customer_code,
-                $request->delivery_code,
-                $request->enduser_code );
-        $order->company_id = $company->id;
-*/
-        $order->opt_order_no = $request->opt_order_no;
+        $order->product_id    = $request->product_id;
+        $order->company_id    = $request->company_id;
+        $order->opt_order_no  = $request->opt_order_no;
         $order->delivery_date = $request->delivery_date;
-
-        // $calcStr = '+' + $company->delivery_lag + ' day';
-        // $expDate = date("Y-m-d", $request->delivery_date.strtotime($calcStr));
-        // $order->exp_ship_date = $expDate;
+        $order->exp_ship_date = $request->exp_ship_date;
 
         // $order->ship_date = ''; 新規作成時には空欄
         $order->order_length = $request->order_length;
         // $order->result_length = ''; 新規作成時には空欄
         $order->lacking_flg = $request->lacking_flg;
-        $order->remarks = $request->remarks;
-        // $order->user_id = Auth::user()->id;
+        $order->remarks     = $request->remarks;
+        $order->user_id     = Auth::id();
 
         $order->save();
 
-        return $request->newCustomer_code;
+        return 'finish';
+
     }
 
+    /**
+     * 
+     */
     function getProduct(?string $product_code, ?string $material_code, ?string $color_code){
         $product = Product::
         where('product_code', '=', $product_code)
@@ -146,6 +137,9 @@ return $pd->id;
         return $result;
     }
 
+    /**
+     * 
+     */
     function getCompany(?string $customer_code, ?string $delivery_code, ?string $enduser_code){
         $company = Company::
         where('customer_code', '=', $customer_code)
@@ -155,13 +149,42 @@ return $pd->id;
         return $company;
     }
 
+    /**
+     * 発送予定日取得API
+     * ※ロジックは切り出すかも
+     * // TODO: 要エラーハンドリング
+     */
+    function getExpshipdate(Request $request){
+        $ddate = $request->delivery_date;
+        $cid = $request->company_id;
+        
+        // 輸送タイムラグを取得
+        $transport_lag = Company::select('delivery_lag')->find($cid)->delivery_lag;
+        
+        // 営業日カレンダーを取得
+        $calendarList = Calendar::
+        where('holiday_flg', '=', '0')
+        ->where('date', '<', $ddate)
+        ->orderBy('date', 'desc')
+        ->take($transport_lag)
+        ->get();
+
+        $resultDate = $calendarList[$transport_lag -1]->date;
+
+        return $resultDate;
+    }
 
 
-    
+    /**
+     * 
+     */
     public function getCompanylist(){
         return Company::get();
     }
 
+    /**
+     * 
+     */
     public function getProductlist(Request $request){
         return Product::
         select('*')

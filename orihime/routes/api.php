@@ -25,6 +25,9 @@ Route::get('/order/search', 'OrderController@search')->name('order_search');
 Route::get('/order/companylist', 'OrderController@getCompanylist')->name('order_getCompanylist');
 // 製品一覧取得
 Route::get('/order/productlist', 'OrderController@getProductlist')->name('order_getProductist');
+// 発送予定日取得
+Route::get('/order/expshipdate', 'OrderController@getExpshipdate')->name('order_getExpshipdate');
+
 
 
 

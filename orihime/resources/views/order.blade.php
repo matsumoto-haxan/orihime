@@ -43,7 +43,7 @@
                     </p>
                     <p>
                         出荷先
-                        <select v-model="newOrderData.newDelivery_code" v-on:blur="getProductList">
+                        <select v-model="newOrderData.newCompany_id" v-on:blur="getProductList">
                             <option v-for="option in delivery_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -55,7 +55,7 @@
                     </p>
                     <p>
                         品番
-                        <select v-model="newOrderData.newProduct_code">
+                        <select v-model="newOrderData.newProduct_code" v-on:blur="setMaterialList">
                             <option v-for="option in product_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -63,7 +63,7 @@
                     </p>
                     <p>
                         生番
-                        <select v-model="newOrderData.newMaterial_code">
+                        <select v-model="newOrderData.newMaterial_code" v-on:blur="setColorList">
                             <option v-for="option in material_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -71,7 +71,7 @@
                     </p>
                     <p>
                         色番
-                        <select v-model="newOrderData.newColor_code">
+                        <select v-model="newOrderData.newProduct_id" v-on:blur="setProductDetail">
                             <option v-for="option in color_list" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
@@ -79,15 +79,17 @@
                     </p>
                     <p>
                         納品日
-                        <input type="date" v-model="newOrderData.newDelivery_date">
+                        <input type="date" v-model="newOrderData.newDelivery_date" v-on:blur="setExpShipDate">
+                        （発送予定日：@{{ exp_ship_date }}）
+                    </p>
+                    <p>
+                        メートル数
+                        <input type="number" v-model="newOrderData.newOrder_length" v-on:blur="setRoll">
                     </p>
                     <p>
                         反数
                         <input type="number" v-model="newOrderData.newRoll_amount">
-                    </p>
-                    <p>
-                        メートル数
-                        <input type="number" v-model="newOrderData.newOrder_length">
+                        （ 一反：@{{ roll_length }}m ）
                     </p>
                     <p>
                         備考

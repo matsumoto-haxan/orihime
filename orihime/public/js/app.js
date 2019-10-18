@@ -49366,8 +49366,10 @@ var app = new Vue({
     customerList: {},
     deliveryList: {},
     materialList: {},
-    fublicList: {},
     colorList: {},
+    roll_length: '--',
+    transport_lag: '1',
+    exp_ship_date: '',
     calenderInt: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -49399,12 +49401,13 @@ var app = new Vue({
     // 更新と共通化するかも
     newOrderData: {
       newCustomer_code: '',
-      newDelivery_code: '',
+      newDCompany_id: '',
       newOpt_order_no: '',
       newProduct_code: '',
       newMaterial_code: '',
-      newColor_code: '',
+      newProduct_id: '',
       newDelivery_date: '',
+      newExp_ship_date: '',
       newOrder_length: '',
       newRoll_amount: '',
       newRemarks: '',
@@ -49441,13 +49444,14 @@ var app = new Vue({
     setCostomerList: function () {
       var result = [];
       this.companyList.forEach(function (cmp) {
-        var tmp = {
-          key: cmp.customer_code,
-          value: cmp.customer_name
-        };
+        
         if (!result.some(function (value) {
           return value.key == cmp.customer_code;
         })) {
+          var tmp = {
+            key: cmp.customer_code,
+            value: cmp.customer_name
+          };
           result.push(tmp);
         }
       });
@@ -49477,14 +49481,12 @@ var app = new Vue({
       });
       this.delivery_list = result;
     },
-
     getProductList: function () {
       axios.get('/api/order/productlist',{
         params: {
-          company_id: this.newOrderData.newDelivery_code
+          company_id: this.newOrderData.newCompany_id
         }
       }).then((res) => {
-        //console.log(res.data);
         this.productList = res.data;
         this.setProductList();
       });
@@ -49492,35 +49494,115 @@ var app = new Vue({
     setProductList: function () {
       var result = [];
       this.productList.forEach(function (prd) {
-        var tmp = {
-          key: prd.product_code,
-          value: prd.product_code
-        };
+        
         if (!result.some(function (value) {
           return value.key == prd.product_code;
         })) {
+          var tmp = {
+            key: prd.product_code,
+            value: prd.product_code
+          };
           result.push(tmp);
         }
       });
       this.product_list = result;
     },
     setMaterialList: function () {
-
+      var result = [];
+      var selectedCode = this.newOrderData.newProduct_code;
+      // 保持してあるマスターの製品リストを回す
+      this.productList.forEach(function (prd) {
+        // 選択中の品番のみ
+        if (selectedCode == prd.product_code) {
+          
+          // 結果セットの重複排除
+          if (!result.some(function (value) {
+            return value.key == prd.material_code;
+        })) {
+            var tmp = {
+              key: prd.material_code,
+              value: prd.material_code
+            };
+            // 結果セットに追加
+            result.push(tmp);
+          }  
+        }
+      });
+      this.material_list = result;
     },
     setColorList: function () {
+      var result = [];
+      var selectedProductCode = this.newOrderData.newProduct_code;
+      var selectedMaterialCode = this.newOrderData.newMaterial_code;
 
+      // 保持してあるマスターの製品リストを回す
+      this.productList.forEach(function (prd) {
+        // 選択中の品番・生番のみ
+        if (selectedProductCode == prd.product_code
+          && selectedMaterialCode == prd.material_code) {
+
+          // 結果セットの重複排除
+          if (!result.some(function (value) {
+            return value.value == prd.color_code;
+          })) {
+            var tmp = {
+              key: prd.id,
+              value: prd.color_code
+            };
+            // 結果セットに追加
+            result.push(tmp);
+          }
+        }
+      });
+      this.color_list = result;
+    },
+    setProductDetail: function () {
+      var rl = '0';
+      var selectedPrdId = this.newOrderData.newProduct_id; 
+      this.productList.forEach(function (prd) {
+        if (prd.id == selectedPrdId) {
+          rl = prd.roll_length;
+        }
+       });
+      this.roll_length = rl;
+    },
+    setExpShipDate: function(){
+      var selectedDD = this.newOrderData.newDelivery_date;
+      var selectedCI = this.newOrderData.newCompany_id;
+      axios.get('/api/order/expshipdate', {
+        params: {
+          company_id: selectedCI,
+          delivery_date: selectedDD
+        }
+      })
+        .then((res) => {
+          rd = res.data;
+          var yeh = rd.slice(0, 4);
+          var mnt = rd.slice(5, 7);
+          var dte = rd.slice(8, 10);
+
+          this.exp_ship_date = yeh + '/' + mnt + '/' + dte;
+          this.newOrderData.newExp_ship_date = yeh + '-' + mnt + '-' + dte
+        });
+
+    },
+    setRoll: function () {
+      var result;
+      var orderLength = this.newOrderData.newOrder_length;
+      if (!isNaN(this.roll_length)) {
+        result = orderLength / this.roll_length;
+      }
+      this.newOrderData.newRoll_amount = result;
     },
     sendNewOrder: function () {
       
       axios.post('/api/order/create', {
-        customer_code: this.newOrderData.newCustomer_code,
-        delivery_code: this.newOrderData.newDelivery_code,
+        product_id: this.newOrderData.newProduct_id,
+        company_id: this.newOrderData.newCompany_id,
         opt_order_no: this.newOrderData.newOpt_order_no,
-        material_code: this.newOrderData.newMaterial_code,
-        color_code: this.newOrderData.newColor_code,
         delivery_date: this.newOrderData.newDelivery_date,
+        exp_ship_date: this.newOrderData.newExp_ship_date,
         order_length: this.newOrderData.newOrder_length,
-        roll_amount: this.newOrderData.newRoll_amount,
         remarks: this.newOrderData.newRemarks,
         lacking_flg: this.newOrderData.newLacking_flg
       })
