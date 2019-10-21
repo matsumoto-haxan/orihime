@@ -132,3 +132,7 @@ table.order_table > thead > tr > td {
 .lackingCell{
 	background-color: lightcoral;
 }
+
+.errorMessage{
+	color: indianred;
+}

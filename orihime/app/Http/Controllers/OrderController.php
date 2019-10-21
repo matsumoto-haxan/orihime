@@ -112,6 +112,45 @@ class OrderController extends Controller
     }
 
     /**
+     * 更新API
+     * TODO: あとで別のコントローラに変えるかも
+     */
+    public function update(Request $request)
+    {
+        try{
+            $updArray = [
+                'delivery_date' => $request->delivery_date,
+                'exp_ship_date' => $request->exp_ship_date,
+                'ship_date' => $request->ship_date,
+                'order_length' => $request->order_length,
+                'result_length' => $request->result_length,
+                'roll_amount' => $request->roll_amount,
+                'lacking_flg' => $request->lacking_flg,
+                'remarks' => $request->remarks,
+                'user_id' => Auth::id()
+            ];
+            $order = Order::where('id', $request->order_id)->update($updArray);
+            return '200';
+        } catch(Exception $ex){
+            return $ex;
+        }
+    }
+
+    /**
+     * 削除API
+     * TODO: あとで別のコントローラに変えるかも
+     */
+    public function delete(Request $request)
+    {
+        try{
+            $order = Order::destroy($request->order_id);
+            return '200';
+        } catch(Exception $ex){
+            return $ex;
+        }
+    }
+
+    /**
      *
      */
     function getCompany(?string $customer_code, ?string $delivery_code, ?string $enduser_code)

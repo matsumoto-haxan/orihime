@@ -32,8 +32,10 @@ Route::get('/order/expshipdate', 'OrderController@getExpshipdate')->name('order_
 
 // 注文新規登録
 Route::post('/order/create', 'OrderController@create')->name('order_create');
-
 // 注文更新
 Route::post('/order/update', 'OrderController@update')->name('order_update');
+// 注文削除
+Route::post('/order/delete', 'OrderController@delete')->name('order_delete');
+
 
 

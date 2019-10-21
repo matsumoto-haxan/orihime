@@ -40,6 +40,7 @@
                                 @{{ option.value }}
                             </option>
                         </select>
+                        <span class="errorMessage">@{{ errorMessage.company }}</span>
                     </p>
                     <p>
                         出荷先
@@ -60,6 +61,8 @@
                                 @{{ option.value }}
                             </option>
                         </select>
+                        <span class="errorMessage">@{{ errorMessage.product }}</span>
+
                     </p>
                     <p>
                         生番
@@ -81,15 +84,18 @@
                         納品日
                         <input type="date" v-model="newOrderData.newDelivery_date" v-on:blur="setExpShipDate">
                         （発送予定日：@{{ exp_ship_date }}）
+                        <span class="errorMessage">@{{ errorMessage.delivery_date }}</span>
                     </p>
                     <p>
                         メートル数
                         <input type="number" v-model="newOrderData.newOrder_length" v-on:blur="setRoll">m
+                        <span class="errorMessage">@{{ errorMessage.order_length }}</span>
                     </p>
                     <p>
                         反数
                         <input type="number" v-model="newOrderData.newRoll_amount">
                         （ 一反：@{{ roll_length }}m ）
+                        <span class="errorMessage">@{{ errorMessage.roll_amount }}</span>
                     </p>
                     <p>
                         備考
@@ -252,7 +258,8 @@
                     <p>
                         納品日
                         <input type="date" v-model="detail.delivery_date" v-on:blur="updSetExpShipDate">
-                        （発送予定日：@{{ detail.exp_ship_date }}）
+                        （発送予定日：@{{ detail.view_exp_ship_date }}）
+                        <span class="errorMessage">@{{ updErrMessage.delivery_date }}</span>
                     </p>
                         発送日
                         <input type="date" v-model="detail.ship_date">
@@ -260,15 +267,18 @@
                     <p>
                         オーダーメートル数
                         <input type="number" v-model="detail.order_length" v-on:blur="updSetRoll">m
+                        <span class="errorMessage">@{{ updErrMessage.order_length }}</span>
                     </p>
                     <p>
                         結果メートル数
                         <input type="number" v-model="detail.result_length">m
+                        <span class="errorMessage">@{{ updErrMessage.result_length }}</span>
                     </p>
                     <p>
                         反数
                         <input type="number" v-model="detail.roll_amount">
                         （ 一反：@{{ detail.roll_length }}m ）
+                        <span class="errorMessage">@{{ updErrMessage.roll_amount }}</span>
                     </p>
                     <p>
                         備考
@@ -281,6 +291,7 @@
                     <p>
                         <input type="button" value="更新" v-on:click="sendUpdateOrder">
                         <input type="button" value="削除" v-on:click="sendDeleteOrder">
+                        <span class="errorMessage">@{{ updErrMessage.order_id }}</span>
                     </p>
                     </div>
                 </div>

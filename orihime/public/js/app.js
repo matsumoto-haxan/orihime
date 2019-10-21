@@ -49420,6 +49420,13 @@ var app = new Vue({
       order_length: '',
       roll_amount: '',
     },
+    updErrMessage: {
+      order_id: '',
+      delivery_date: '',
+      order_length: '',
+      result_length: '',
+      roll_amount: '',
+    },
     detail: {
       order_id: '',
       company_id: '',
@@ -49432,9 +49439,11 @@ var app = new Vue({
       color_code: '',
       delivery_date: '',
       exp_ship_date: '',
+      view_exp_ship_date: '',
       ship_date: '',
       order_length: '',
       result_length: '',
+      roll_length: '',
       roll_amount: '',
       remarks: '',
       lacking_flg: '',
@@ -49481,6 +49490,7 @@ var app = new Vue({
           this.detail.order_length = resultData.order_length;
           this.detail.result_length = resultData.result_length;
           this.detail.roll_amount = resultData.roll_amount;
+          this.detail.roll_length = resultData.roll_length;
           this.detail.remarks = resultData.remarks;
           this.detail.lacking_flg = resultData.lacking_flg;
       });
@@ -49647,7 +49657,8 @@ var app = new Vue({
     },
     sendNewOrder: function () {
 
-      if (this.checkForm()) {
+      if (this.checkCreateForm()) {
+        this.clearErrMessage();
         axios.post('/api/order/create', {
           product_id: this.newOrderData.newProduct_id,
           company_id: this.newOrderData.newCompany_id,
@@ -49670,7 +49681,7 @@ var app = new Vue({
           });  
       }
     },
-    checkForm: function(){
+    checkCreateForm: function(){
       var isClear = true;
       if (!this.newOrderData.newProduct_id) {
         this.errorMessage.product = 'もう一度製品情報を選択してください';
@@ -49708,17 +49719,116 @@ var app = new Vue({
       var re = /^[0-9]*$/
       return re.test(inputdata);
     },
-    updSetExpShipDate: function () {
-
+    clearErrMessage: function () {
+      this.errorMessage.company = '';
+      this.errorMessage.product = '';
+      this.errorMessage.delivery_date = '';
+      this.errorMessage.order_length = '';
+      this.errorMessage.roll_amount = '';
     },
-    updSetRoll: function(){
+    updSetExpShipDate: function () {
+      var selectedDD = this.detail.delivery_date;
+      var selectedCI = this.detail.company_id;
+      axios.get('/api/order/expshipdate', {
+        params: {
+          company_id: selectedCI,
+          delivery_date: selectedDD
+        }
+      })
+        .then((res) => {
+          rd = res.data;
+          var yeh = rd.slice(0, 4);
+          var mnt = rd.slice(5, 7);
+          var dte = rd.slice(8, 10);
 
+          this.detail.view_exp_ship_date = yeh + '/' + mnt + '/' + dte;
+          this.detail.exp_ship_date = yeh + '-' + mnt + '-' + dte
+        });
+    },
+    updSetRoll: function () {
+      var result;
+      var orderLength = this.detail.order_length;
+      if (!isNaN(this.detail.roll_length)) {
+        result = orderLength / this.detail.roll_length;
+      }
+      this.detail.roll_amount = result;
     },
     sendUpdateOrder: function(){
+      if (this.checkUpdateForm()) {
+        axios.post('/api/order/update', {
+          order_id: this.detail.order_id,
+          delivery_date: this.detail.delivery_date,
+          exp_ship_date: this.detail.exp_ship_date,
+          ship_date: this.detail.ship_date,
+          order_length: this.detail.order_length,
+          result_length: this.detail.result_length,
+          roll_amount: this.detail.roll_amount,
+          remarks: this.detail.remarks,
+          lacking_flg: this.detail.lacking_flg
+        })
+          .then((res) => {
+            switch (res.data) {
+              case 200:
+                alert('更新しました');
+                break;
+              default:
+                alert('サーバ内で何かエラーがありました。以下をシステム管理者に伝えてください。：' + res.data);
+            }
+          });
+      }
+    },
+    checkUpdateForm: function () {
+      var isClear = true;
 
+
+      if (!this.detail.order_id) {
+        this.updErrMessage.order_id = '正しく注文が読み込まれませんでした。再読み込みして下さい。';
+        isClear = false;
+      }
+
+      if (!this.detail.delivery_date) {
+        this.updErrMessage.delivery_date = '納品日を入力してください';
+        isClear = false;
+      }
+
+      if (!this.detail.order_length) {
+        this.updErrMessage.order_length = 'オーダーメートル数を入力してください';
+        isClear = false;
+      } else if (!this.checkNum(this.detail.order_length)) {
+        this.updErrMessage.order_length = 'オーダーメートル数は半角数字で入力してください';
+        isClear = false;
+      }
+
+      if (!this.detail.result_length) {
+      } else if (!this.checkNum(this.detail.result_length)) {
+        this.updErrMessage.result_length = '結果メートル数は半角数字で入力してください';
+        isClear = false;
+      }
+
+      if (!this.detail.roll_amount) {
+        this.updErrMessage.roll_amount = '反数を入力してください';
+        isClear = false;
+      } else if (!this.checkNum(this.detail.roll_amount)) {
+        this.updErrMessage.roll_amount = '反数は半角数字で入力してください';
+        isClear = false;
+      }
+      return isClear;
     },
     sendDeleteOrder: function () {
-
+      if (confirm('本当に削除しますか？')) {
+        axios.post('/api/order/delete', {
+          order_id: this.detail.order_id,
+        })
+          .then((res) => {
+            switch (res.data) {
+              case 200:
+                alert('削除しました');
+                break;
+              default:
+                alert('サーバ内で何かエラーがありました。以下をシステム管理者に伝えてください。：' + res.data);
+            }
+          });
+      }
     },
   },
 });
