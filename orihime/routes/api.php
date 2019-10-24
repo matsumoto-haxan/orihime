@@ -22,10 +22,11 @@ Route::get('/order/search', 'OrderController@search')->name('order_search');
 // 注文詳細取得
 Route::get('/order/detail', 'OrderController@getDetail')->name('order_getDetail');
 
+
 // 会社一覧取得
 Route::get('/order/companylist', 'OrderController@getCompanylist')->name('order_getCompanylist');
 // 製品一覧取得
-Route::get('/order/productlist', 'OrderController@getProductlist')->name('order_getProductist');
+Route::get('/order/productlist', 'OrderController@getProductlist')->name('order_getProductlist');
 // 発送予定日取得
 Route::get('/order/expshipdate', 'OrderController@getExpshipdate')->name('order_getExpshipdate');
 

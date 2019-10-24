@@ -19,7 +19,7 @@
                     <button class="main_func_button" onclick="location.href='/order'">注文管理</button>
                     <button class="main_func_button" onclick="location.href='/delivery'">出荷管理表</button>
                     <button class="main_func_button" onclick="location.href='/shipping'">出荷依頼書</button>
-                    <button class="main_func_button" onclick="location.href='/admin'">マスタ編集</button>
+                    <button class="main_func_button" onclick="location.href='/admin/bread'">マスタ編集</button>
                 </div>
             </div>
         </div>

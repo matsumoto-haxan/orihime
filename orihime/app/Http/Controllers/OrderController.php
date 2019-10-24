@@ -35,50 +35,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // 通常遷移時には一覧表を表示しない
-
-        // 検索条件設定のためのデータ取得
-
-        // ダミー
-        $customer_list = [
-            '' => '',
-            '2A2C' => '帝人フロンティア',
-            'SAI01' => 'セージ・オートモーティブ・インテリア'
-        ];
-        $delivery_list = [
-            '' => '',
-            '5493' => '東名化成（株）三重',
-            'th001' => '田島縫製（鈴鹿事業所）'
-        ];
-        $material_list = [
-            '' => '',
-            'TR640A' => 'TR640A',
-            'TR640AW' => 'TR640AW',
-            'TR662A' => 'TR662A'
-        ];
-        $color_list = [
-            '' => '',
-            'Y605' => 'Y605',
-            'B603' => 'B603'
-        ];
-        $date_list = [
-            '' => '',
-            '201908' => '2019年8月',
-            '201909' => '2019年9月',
-            '201910' => '2019年10月',
-            '201911' => '2019年11月',
-        ];
-        $i = 1;
-        $caldate = [];
-        while ($i < 32) {
-            array_push($caldate, $i);
-            $i++;
-        }
-
-
-        // compactメソッドに変数名をStringで渡すと勝手に送ってくれる
-        return view('order', compact('customer_list', 'delivery_list', 'material_list', 'color_list', 'date_list', 'caldate'));
-        
+        return view('order');   
     }
 
 
@@ -183,6 +140,7 @@ class OrderController extends Controller
         return $result;
     }
 
+
     /**
      * 発送予定日取得API
      * ※ロジックは切り出すかも
@@ -217,14 +175,24 @@ class OrderController extends Controller
     }
 
     /**
-     * 
+     * 製品一覧取得API
      */
     public function getProductlist(Request $request){
-        return Product::
-        select('*')
-        ->join('agreements', 'agreements.product_id','=','products.id')
-        ->where('company_id', '=', $request->company_id)
-        ->get();
+
+        if($request->company_id != ''){
+            return Product::
+            select('*')
+            ->join('agreements', 'agreements.product_id', '=', 'products.id')
+            ->where('company_id', '=', $request->company_id)
+            ->get();
+        }else{
+            return Product::
+            select('*')
+            ->join('agreements', 'agreements.product_id', '=', 'products.id')
+            ->get();
+        }
+        
+        
     }
 
     /**
@@ -234,12 +202,31 @@ class OrderController extends Controller
     public function search(Request $request)
     {
         // ①DBから取得
-        $orders = DB::table('orders')
-        ->select('*')
-        ->addSelect('orders.id as order_id')
-        ->join('products', 'orders.product_id','=','products.id')
-        ->join('companies', 'orders.company_id','=','companies.id')
-        ->get();
+        $query = Order::query();
+        $query->select('*')
+            ->addSelect('orders.id as order_id')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->join('companies', 'orders.company_id', '=', 'companies.id');
+
+        // 会社情報の検索条件を追加
+        if($request->company_id){
+            $query->where('company_id', '=', $request->company_id);
+        }else if($request->customer_code){
+            $query->where('customer_code', '=', $request->customer_code);
+        }
+
+        // 製品情報の検索条件を追加
+        if ($request->product_id) {
+            $query->where('product_id', '=', $request->product_id);
+        } else {
+            if ($request->product_code) {
+                $query->where('product_code', '=', $request->product_code);
+                if($request->material_code){
+                    $query->where('material_code', '=', $request->material_code);
+                }
+            }
+        }
+        $orders = $query->get();
 
         // ↓確認
         // return $orders;

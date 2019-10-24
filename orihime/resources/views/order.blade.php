@@ -36,7 +36,7 @@
                     <p>
                         契約先
                         <select v-model="newOrderData.newCustomer_code" v-on:blur="setDeliveryList">
-                            <option v-for="option in customer_list" v-bind:value="option.key">
+                            <option v-for="option in customerList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>
@@ -45,7 +45,7 @@
                     <p>
                         出荷先
                         <select v-model="newOrderData.newCompany_id" v-on:blur="getProductList">
-                            <option v-for="option in delivery_list" v-bind:value="option.key">
+                            <option v-for="option in deliveryList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>
@@ -57,7 +57,7 @@
                     <p>
                         品番
                         <select v-model="newOrderData.newProduct_code" v-on:blur="setMaterialList">
-                            <option v-for="option in product_list" v-bind:value="option.key">
+                            <option v-for="option in productList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>
@@ -67,7 +67,7 @@
                     <p>
                         生番
                         <select v-model="newOrderData.newMaterial_code" v-on:blur="setColorList">
-                            <option v-for="option in material_list" v-bind:value="option.key">
+                            <option v-for="option in materialList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>
@@ -75,7 +75,7 @@
                     <p>
                         色番
                         <select v-model="newOrderData.newProduct_id" v-on:blur="setProductDetail">
-                            <option v-for="option in color_list" v-bind:value="option.key">
+                            <option v-for="option in colorList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>
@@ -126,43 +126,49 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto header_input_list">
                         <li>
-                            <select>
-                                @foreach($customer_list as $index => $name)
-                                    <option value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
+                            <select v-model="search.customer_code" v-on:blur="setSearchDeliveryList">
+                                <option v-for="option in searchCustomerList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
                             </select>
                         </li>
-
                         <li>
-                            <select>
-                                @foreach($delivery_list as $index => $name)
-                                    <option value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
+                            <select v-model="search.company_id">
+                                <option v-for="option in searchDeliveryList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
                             </select>
                         </li>
-
-                        <li>
-                            <select>
-                                @foreach($material_list as $index => $name)
-                                    <option value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
+                        <li class="nav-item">
+                            <button class="" v-on:click="getSearchProductList">しぼりこむ</button>
                         </li>
-
                         <li>
-                            <select>
-                                @foreach($color_list as $index => $name)
-                                    <option value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
+                            <select v-model="search.product_code" v-on:blur="setSearchMaterialList">
+                                <option v-for="option in searchProductList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
                         </li>
-
                         <li>
-                            <select>
-                                @foreach($date_list as $index => $name)
-                                    <option value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
+                            <select v-model="search.material_code" v-on:blur="setSearchColorList">
+                                <option v-for="option in searchMaterialList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.product_id">
+                                <option v-for="option in searchColorList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.delivery_date" >
+                                <option v-for="option in searchDateList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
                         </li>
 
                     </ul>
@@ -190,9 +196,9 @@
                         <tr>
                             <td>品番</td>
                             <td>出荷先</td>
-                            @foreach ($caldate as $day)
-                                <td class="calendar_cell">{{ $day }}</td>
-                            @endforeach
+                            <td v-for="value in calenderInt" class="calendar_cell">
+                                @{{ value }}
+                            </td>
                         </tr>
                     </thead>
 
