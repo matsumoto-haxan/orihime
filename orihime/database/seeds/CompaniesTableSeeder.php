@@ -22,7 +22,7 @@ class CompaniesTableSeeder extends Seeder
         $item1->enduser_code    = '';
         $item1->delivery_lag    = '3';
         $item1->company_remarks = '受け取り担当者は「山田」様です';
-        $item1->sort_order      = '';
+        $item1->sort_order      = '0';
 
         $item1->save();
 
@@ -34,7 +34,7 @@ class CompaniesTableSeeder extends Seeder
         $item2->enduser_name    = '林テレンプ';
         $item2->enduser_code    = '';
         $item2->delivery_lag    = '1';
-        $item2->company_remarks = '';
+        $item2->company_remarks = '0';
         $item2->sort_order = '';
 
         $item2->save();
@@ -47,7 +47,7 @@ class CompaniesTableSeeder extends Seeder
         $item3->enduser_name    = '林テレンプ';
         $item3->enduser_code    = '';
         $item3->delivery_lag    = '2';
-        $item3->company_remarks = '';
+        $item3->company_remarks = '0';
         $item3->sort_order = '';
 
         $item3->save();
