@@ -13,6 +13,8 @@ class CalendarsTableSeeder extends Seeder
      */
     public function run()
     {
+        Calendar::truncate();
+
         $week_name = array("日", "月", "火", "水", "木", "金", "土");
         $refDate = new DateTime('2019-11-01 00:00:00');
 
@@ -24,7 +26,7 @@ class CalendarsTableSeeder extends Seeder
             $item1->month       = $refDate->format('n');
             $item1->day         = $refDate->format('j');
             $item1->weekday     = $week_name[$refDate->format('w')];
-            if($refDate->format('w')==0 || $refDate->format('w')==1){
+            if($refDate->format('w')==0 || $refDate->format('w')==6){
                 $item1->holiday_flg = 1;
             } else{
                 $item1->holiday_flg = 0;
