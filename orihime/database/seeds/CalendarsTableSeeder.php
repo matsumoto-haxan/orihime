@@ -24,7 +24,7 @@ class CalendarsTableSeeder extends Seeder
             $item1->month       = $refDate->format('n');
             $item1->day         = $refDate->format('j');
             $item1->weekday     = $week_name[$refDate->format('w')];
-            if(format('w')==0 || $refDate->format('w')==1){
+            if($refDate->format('w')==0 || $refDate->format('w')==1){
                 $item1->holiday_flg = 1;
             } else{
                 $item1->holiday_flg = 0;
