@@ -49721,10 +49721,10 @@ var app = new Vue({
     setMaterialList: function () {
       var result = [];
       var selectedCode = this.newOrderData.newProduct_code;
-      alert('selectedCode: ' + selectedCode);
+      
       // 保持してあるマスターの製品リストを回す
       this.productList.forEach(function (prd) {
-        alert('material_code: ' + prd.material_code);
+
         // 選択中の品番のみ
         if (selectedCode == prd.product_code) {
           
