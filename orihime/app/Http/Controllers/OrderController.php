@@ -56,7 +56,13 @@ class OrderController extends Controller
             $order->exp_ship_date = $request->exp_ship_date;
             $order->order_length  = $request->order_length;
             $order->roll_amount   = $request->roll_amount;
-            $order->lacking_flg   = $request->lacking_flg;
+            if($request->lacking_flg){
+                $order->lacking_flg = $request->lacking_flg;
+
+            }else{
+                $order->lacking_flg = 0;
+            }
+            
             $order->remarks       = $request->remarks;
             $order->user_id       = Auth::id();
 
@@ -226,6 +232,14 @@ class OrderController extends Controller
                 }
             }
         }
+
+        // 納品日の期間を検索条件に追加
+        // date_default_timezone_set('Asia/Tokyo');
+        $from = date_create($request->delivery_date);
+        $to = date_create($request->delivery_date);
+        $to->modify('+1 months - 1 days'); 
+        $query->whereBetween('delivery_date', [$from, $to]);
+
         $orders = $query->get();
 
         // ↓確認
