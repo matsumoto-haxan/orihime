@@ -13,6 +13,8 @@ class AgreementsTableSeeder extends Seeder
      */
     public function run()
     {
+        Agreement::truncate();
+
         $ag1             = new Agreement();
         $ag1->company_id = '1';
         $ag1->product_id = '1';
@@ -23,17 +25,26 @@ class AgreementsTableSeeder extends Seeder
         $ag2->product_id = '1';
         $ag2->save();
 
-        /*
         $ag3             = new Agreement();
-        $ag3->company_id = '';
-        $ag3->product_id = '';
+        $ag3->company_id = '1';
+        $ag3->product_id = '2';
         $ag3->save();
 
         $ag4             = new Agreement();
-        $ag4->company_id = '';
-        $ag4->product_id = '';
+        $ag4->company_id = '1';
+        $ag4->product_id = '3';
         $ag4->save();
-        */
+
+        $ag5             = new Agreement();
+        $ag5->company_id = '1';
+        $ag5->product_id = '4';
+        $ag5->save();
+
+        $ag6             = new Agreement();
+        $ag6->company_id = '1';
+        $ag6->product_id = '5';
+        $ag6->save();
+
         
     }
 }

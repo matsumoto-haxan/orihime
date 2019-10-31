@@ -12,16 +12,18 @@ class ProductsTableSeeder extends Seeder
      */
     public function run()
     {
+        Product::truncate();
+
         $item1                  = new Product();
         $item1->product_code   = 'TR640A';
-        $item1->material_code   = '';
+        $item1->material_code   = '-';
         $item1->color_code   = 'Y605';
         $item1->roll_length   = '50';
         $item1->save();
 
         $item2                = new Product();
         $item2->product_code  = 'TR640AW';
-        $item2->material_code = '';
+        $item2->material_code = '-';
         $item2->color_code    = 'Y605';
         $item2->roll_length   = '50';
         $item2->save();

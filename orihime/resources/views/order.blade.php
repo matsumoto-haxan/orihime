@@ -57,7 +57,7 @@
                     <p>
                         品番
                         <select v-model="newOrderData.newProduct_code" v-on:blur="setMaterialList">
-                            <option v-for="option in productList" v-bind:value="option.key">
+                            <option v-for="option in productCodeList" v-bind:value="option.key">
                                 @{{ option.value }}
                             </option>
                         </select>

@@ -13,6 +13,8 @@ class CompaniesTableSeeder extends Seeder
      */
     public function run()
     {
+        Company::truncate();
+
         $item1                  = new Company();
         $item1->customer_name   = '帝人フロンティア';
         $item1->customer_code   = '2A2C';
