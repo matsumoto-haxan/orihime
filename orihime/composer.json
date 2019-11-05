@@ -13,6 +13,7 @@
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravel/ui": "^1.0",
+        "maatwebsite/excel": "^3.1",
         "tcg/voyager": "^1.2"
     },
     "require-dev": {
