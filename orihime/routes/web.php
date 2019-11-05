@@ -27,3 +27,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 // 注文入力画面
 Route::get('/order', 'OrderController@index')->name('order');
+
+// 出荷管理画面
+Route::get('/management', 'ManagementController@index')->name('management');
+
+// 出荷指示書画面
+Route::get('/instruction', 'InstructionController@index')->name('instruction');
+
