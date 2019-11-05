@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Exports\Export;
+use App\Calendar;
+
+
 
 class ManagementController extends Controller
 {
@@ -24,5 +28,17 @@ class ManagementController extends Controller
     public function index()
     {
         return view('management');
+    }
+
+
+    /**
+     * エクセル出力テスト
+     */
+    public function export()
+    {
+        $calendars = Calendar::get();
+
+        $view  = \view('exporttest', compact('calendars'));
+        return \Excel::download(new Export($view), 'exp.pdf');
     }
 }

@@ -30,6 +30,7 @@ Route::get('/order', 'OrderController@index')->name('order');
 
 // 出荷管理画面
 Route::get('/management', 'ManagementController@index')->name('management');
+Route::get('/management/export', 'ManagementController@export')->name('exporttest');
 
 // 出荷指示書画面
 Route::get('/instruction', 'InstructionController@index')->name('instruction');
