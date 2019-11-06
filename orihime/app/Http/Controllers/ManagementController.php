@@ -34,11 +34,33 @@ class ManagementController extends Controller
     /**
      * エクセル出力テスト
      */
+    public function export_()
+    {
+        $calendars = Calendar::get();
+
+        $view  = \view('exporttest', compact('calendars'));
+        return \Excel::download(new Export($view), 'exp.xlsx');
+    }
+
+    /**
+     * PDF出力テスト
+     */
     public function export()
     {
         $calendars = Calendar::get();
 
         $view  = \view('exporttest', compact('calendars'));
-        return \Excel::download(new Export($view), 'exp.pdf');
+
+        // $pdf = \PDF::loadHTML($view);
+        $pdf = \PDF::loadHTML($view)->setPaper('a3', 'landscape'); 
+
+
+        // ブラウザにPDFを直接表示させたい場合
+        return $pdf->stream('title.pdf');
+
+        // ダウンロードさせたい場合
+        // return $pdf->download('title.pdf');
+
+
     }
 }
