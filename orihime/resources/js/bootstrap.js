@@ -23,6 +23,7 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
@@ -53,3 +54,8 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/*
+ * APIトークンをリクエストのヘッダーに追加する
+ */
+window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + Laravel.apiToken;

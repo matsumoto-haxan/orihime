@@ -31,6 +31,26 @@ class ManagementController extends Controller
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
     /**
      * エクセル出力テスト
      */
@@ -52,7 +72,7 @@ class ManagementController extends Controller
         $view  = \view('exporttest', compact('calendars'));
 
         // $pdf = \PDF::loadHTML($view);
-        $pdf = \PDF::loadHTML($view)->setPaper('a3', 'landscape'); 
+        $pdf = \PDF::loadHTML($view)->setPaper('b4', 'landscape'); 
 
 
         // ブラウザにPDFを直接表示させたい場合

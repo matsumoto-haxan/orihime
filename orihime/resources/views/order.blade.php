@@ -9,6 +9,13 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- APIトークンの読み込み -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'apiToken' => \Auth::user()->api_token ?? null
+        ]) !!};
+    </script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/order.js') }}" defer></script>

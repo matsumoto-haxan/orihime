@@ -38,14 +38,58 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto header_input_list">
                         <li>
-                            ヘッダー
+                            <select v-model="search.customer_code" v-on:blur="setSearchDeliveryList">
+                                <option v-for="option in searchCustomerList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                            </select>
+                        </li>
+                        <li>
+                            <select v-model="search.company_id">
+                                <option v-for="option in searchDeliveryList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                            </select>
+                        </li>
+                        <li class="nav-item">
+                            <button class="" v-on:click="getSearchProductList">しぼりこむ</button>
+                        </li>
+                        <li>
+                            <select v-model="search.product_code" v-on:blur="setSearchMaterialList">
+                                <option v-for="option in searchProductList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.material_code" v-on:blur="setSearchColorList">
+                                <option v-for="option in searchMaterialList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.product_id">
+                                <option v-for="option in searchColorList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.delivery_date" >
+                                <option v-for="option in searchDateList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
                         </li>
 
+                    </ul>
+                    
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <button class="" >表示</button>
+                            <button class="" v-on:click="searchOrders">表示</button>
                         </li>
 
                     </ul>
@@ -54,8 +98,47 @@
         </nav>
 
         <main class="py-4">
-            出荷管理表
-        
+
+            <div class="container order_table_container">
+                <div class="row justify-content-center">
+            <div>
+                <table class="order_table">
+                    <!-- ヘッダー行 -->
+                    <thead>
+                        <tr>
+                            <td>品番</td>
+                            <td>出荷先</td>
+                            <td v-for="value in calenderInt" class="calendar_cell">
+                                @{{ value }}
+                            </td>
+                        </tr>
+                    </thead>
+
+                    <!-- ２行目以降 -->
+                    <tbody>
+                    <tr v-for="order in orders">
+                        <td>@{{order.product_code}}</td>
+                        <td>@{{order.delivery_name}}</td>
+                        <template v-for='dayInt in calenderInt'>
+                            <template v-for='element in order.delivery_date'>
+                                <template v-if="element.day == dayInt">
+                                    <template v-if="element.order_id">
+                                        <td v-on:click="showOrder(element.order_id)"
+                                            :class="lackingColor(element.lacking_flg)" >
+                                            @{{element.order_length}}
+                                        </td>
+                                    </template>
+                                    <template v-else>
+                                        <td >
+                                        </td>
+                                    </template>
+                                </template>
+                            </template>
+                        </template>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </main>
 
 
