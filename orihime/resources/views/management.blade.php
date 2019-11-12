@@ -9,6 +9,13 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- APIトークンの読み込み -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'apiToken' => \Auth::user()->api_token ?? null
+        ]) !!};
+    </script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/order.js') }}" defer></script>
@@ -23,7 +30,7 @@
     <link href="{{ asset('css/haxanstyle.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="mngapp">
         <!-- ヘッダー -->
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -38,46 +45,46 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto header_input_list">
                         <li>
-                            <select v-model="search.customer_code" v-on:blur="setSearchDeliveryList">
-                                <option v-for="option in searchCustomerList" v-bind:value="option.key">
+                            <select v-model="search.customer_code" v-on:blur="setDeliveryList">
+                                <option v-for="option in search.customerList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                             </select>
                         </li>
                         <li>
                             <select v-model="search.company_id">
-                                <option v-for="option in searchDeliveryList" v-bind:value="option.key">
+                                <option v-for="option in search.deliveryList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                             </select>
                         </li>
                         <li class="nav-item">
-                            <button class="" v-on:click="getSearchProductList">しぼりこむ</button>
+                            <button class="" v-on:click="getProductList">しぼりこむ</button>
                         </li>
                         <li>
-                            <select v-model="search.product_code" v-on:blur="setSearchMaterialList">
-                                <option v-for="option in searchProductList" v-bind:value="option.key">
+                            <select v-model="search.product_code" v-on:blur="setMaterialList">
+                                <option v-for="option in search.productList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                         </select>
                         </li>
                         <li>
-                            <select v-model="search.material_code" v-on:blur="setSearchColorList">
-                                <option v-for="option in searchMaterialList" v-bind:value="option.key">
+                            <select v-model="search.material_code" v-on:blur="setColorList">
+                                <option v-for="option in search.materialList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                         </select>
                         </li>
                         <li>
                             <select v-model="search.product_id">
-                                <option v-for="option in searchColorList" v-bind:value="option.key">
+                                <option v-for="option in search.colorList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                         </select>
                         </li>
                         <li>
                             <select v-model="search.delivery_date" >
-                                <option v-for="option in searchDateList" v-bind:value="option.key">
+                                <option v-for="option in search.dateList" v-bind:value="option.key">
                                     @{{ option.value }}
                                 </option>
                         </select>
@@ -89,7 +96,8 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <button class="" v-on:click="searchOrders">表示</button>
+                            <button class="" v-on:click="searchMngList">表示</button>
+                            <button class="" v-on:click="exportMngPdf">印刷</button>
                         </li>
 
                     </ul>
@@ -102,6 +110,7 @@
             <div class="container order_table_container">
                 <div class="row justify-content-center">
             <div>
+
                 <table class="order_table">
                     <!-- ヘッダー行 -->
                     <thead>
@@ -116,9 +125,14 @@
 
                     <!-- ２行目以降 -->
                     <tbody>
-                    <tr v-for="order in orders">
-                        <td>@{{order.product_code}}</td>
-                        <td>@{{order.delivery_name}}</td>
+                    <tr v-for="orderSet in orderSetList">
+                        <td row='4'>@{{orderSet.product_code}}</td>
+                        <td row='4'>@{{orderSet.delivery_name}}</td>
+                        <td 
+
+
+
+
                         <template v-for='dayInt in calenderInt'>
                             <template v-for='element in order.delivery_date'>
                                 <template v-if="element.day == dayInt">

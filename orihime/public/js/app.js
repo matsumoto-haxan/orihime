@@ -49358,6 +49358,198 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
     
     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + Laravel.apiToken;
 
+/* 出荷管理表画面（共通化できるかもだけど、いったん分離する） */
+var mngapp = new Vue({
+  el: '#mngapp',
+  data: {
+    calenderInt: [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+      11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+    ],
+    search: {
+      // 値のバインディング
+      customer_code: '',
+      company_id: '',
+      product_code: '',
+      material_code: '',
+      product_id: '',
+      delivery_date: '',
+      // 選択肢リスト
+      masterCompanyList: {},
+      masterProductList: {},
+      customerList: {},
+      deliveryList: {},
+      productList: {},
+      materialList: {},
+      colorList: {},
+      dateList: {},
+    },
+    orderSetList: {},
+  },
+  mounted() {
+    // 一覧検索機能で使うリストを準備
+    this.getCompanyList();
+    this.getProductList();
+    this.getDateList();
+  },
+  methods: {
+    /* 一覧検索 */
+    getCompanyList: function () {
+      axios.get('/api/management/companylist'
+      ).then((res) => {
+        this.search.masterCompanyList = res.data;
+        this.setCustomerList();
+      });
+    },
+    getProductList: function () {
+      axios.get('/api/management/productlist', {
+        params: {
+          company_id: this.search.company_id
+        }
+      }).then((res) => {
+        this.search.masterProductList = res.data;
+        this.setProductList();
+      });
+    },
+    getDateList: function () {
+      var dt = new Date();
+      nowyr = dt.getFullYear();
+      nowmt = dt.getMonth() + 1;
+      this.search.delivery_date =
+        nowyr + '-' + nowmt + '-' + '01';
+      dt.setMonth(dt.getMonth() - 12);
+      var resultArr = [];
+      var count = 0;
+      while (count < 15) {
+        dt.setMonth(dt.getMonth() + 1);
+        var yr = dt.getFullYear();
+        var mt = dt.getMonth() + 1;
+        var dateArr = {
+          key: yr + '-' + mt + '-' + '01',
+          value: yr + '年' + mt + '月'
+        };
+        resultArr.push(dateArr);
+        count++;
+      }
+      this.search.dateList = resultArr;
+    },
+    setCustomerList: function () {
+      var result = [];
+      this.search.masterCompanyList.forEach(function (cmp) {
+
+        if (!result.some(function (value) {
+          return value.key == cmp.customer_code;
+        })) {
+          var tmp = {
+            key: cmp.customer_code,
+            value: cmp.customer_name
+          };
+          result.push(tmp);
+        }
+      });
+      this.search.customerList = result;
+      this.search.company_id = '';
+    },
+    setDeliveryList: function () {
+      var result = [];
+      var selectedCode = this.search.customer_code;
+      this.search.masterCompanyList.forEach(function (cmp) {
+        if (cmp.customer_code === selectedCode) {
+          var tmp = {
+            key: cmp.id,
+            value: cmp.delivery_name
+          };
+          result.push(tmp);
+        }
+      });
+      this.search.deliveryList = result;
+      this.getProductList();
+    },
+    setProductList: function () {
+      var result = [];
+      this.search.masterProductList.forEach(function (prd) {
+        if (!result.some(function (value) {
+          return value.key == prd.product_code;
+        })) {
+          var tmp = {
+            key: prd.product_code,
+            value: prd.product_code
+          };
+          result.push(tmp);
+        }
+      });
+      this.search.productList = result;
+    },
+    setMaterialList: function () {
+      var result = [];
+      var selectedCode = this.search.product_code;
+      // 保持してあるマスターの製品リストを回す
+      this.search.masterProductList.forEach(function (prd) {
+        // 選択中の品番のみ
+        if (selectedCode == prd.product_code) {
+
+          // 結果セットの重複排除
+          if (!result.some(function (value) {
+            return value.key == prd.material_code;
+          })) {
+            var tmp = {
+              key: prd.material_code,
+              value: prd.material_code
+            };
+            // 結果セットに追加
+            result.push(tmp);
+          }
+        }
+      });
+      this.search.materialList = result;
+    },
+    setColorList: function () {
+      var result = [];
+      var selectedProductCode = this.search.product_code;
+      var selectedMaterialCode = this.search.material_code;
+      // 保持してあるマスターの製品リストを回す
+      this.search.masterProductList.forEach(function (prd) {
+        // 選択中の品番・生番のみ
+        if (selectedProductCode == prd.product_code
+          && selectedMaterialCode == prd.material_code) {
+          // 結果セットの重複排除
+          if (!result.some(function (value) {
+            return value.value == prd.color_code;
+          })) {
+            var tmp = {
+              key: prd.id,
+              value: prd.color_code
+            };
+            // 結果セットに追加
+            result.push(tmp);
+          }
+        }
+      });
+      this.search.colorList = result;
+    },
+    searchMngList: function () {
+      axios.get('/api/management/search', {
+        params: {
+          company_id: this.search.company_id,
+          customer_code: this.search.customer_code,
+          product_id: this.search.product_id,
+          product_code: this.search.product_code,
+          material_code: this.search.material_code,
+          delivery_date: this.search.delivery_date,
+        }
+      }).then((res) => {
+        this.orderSetList = res.data
+      });
+    },
+    exportMngPdf: function () {
+      
+    }
+  }
+});
+
+
+/* 注文入力画面 */
 var app = new Vue({
   el: '#app',
   data: {

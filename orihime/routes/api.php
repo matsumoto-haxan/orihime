@@ -43,5 +43,7 @@ Route::get('/order/expshipdate', 'ApiController@getExpshipdate')->name('order_ge
 Route::get('/management/companylist', 'ApiController@getCompanylist')->name('management_getCompanylist');
 // 製品一覧取得
 Route::get('/management/productlist', 'ApiController@getProductlist')->name('management_getProductlist');
+// 注文一覧取得
+Route::get('/management/search', 'ApiController@mngSearch')->name('management_search');
 
 
