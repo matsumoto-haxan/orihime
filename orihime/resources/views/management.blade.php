@@ -107,49 +107,57 @@
 
         <main class="py-4">
 
-            <div class="container order_table_container">
-                <div class="row justify-content-center">
-            <div>
+            <div class="mngTableWrapper">
 
-                <table class="order_table">
+                <table class="sticky_table">
                     <!-- ヘッダー行 -->
                     <thead>
                         <tr>
-                            <td>品番</td>
-                            <td>出荷先</td>
-                            <td v-for="value in calenderInt" class="calendar_cell">
+                            <td class="topfix leftfix1 mngPrdCell">品番</td>
+                            <td class="topfix leftfix2 mngDlvCell">出荷先</td>
+                            <td v-for="value in calenderInt" class="topfix mngCalCell">
                                 @{{ value }}
                             </td>
                         </tr>
                     </thead>
 
-                    <!-- ２行目以降 -->
                     <tbody>
-                    <tr v-for="orderSet in orderSetList">
-                        <td row='4'>@{{orderSet.product_code}}</td>
-                        <td row='4'>@{{orderSet.delivery_name}}</td>
-                        <td 
-
-
-
-
-                        <template v-for='dayInt in calenderInt'>
-                            <template v-for='element in order.delivery_date'>
-                                <template v-if="element.day == dayInt">
-                                    <template v-if="element.order_id">
-                                        <td v-on:click="showOrder(element.order_id)"
-                                            :class="lackingColor(element.lacking_flg)" >
-                                            @{{element.order_length}}
-                                        </td>
-                                    </template>
-                                    <template v-else>
-                                        <td >
-                                        </td>
-                                    </template>
-                                </template>
+                    <!-- 1行目 -->
+                    <template v-for="orderSet in orderSetList">
+                        <tr >
+                            <td class="leftfix1 categoryBorder" rowspan='4'> @{{ orderSet.product_code }}</td>
+                            <td class="leftfix2 categoryBorder" rowspan='4'> @{{ orderSet.delivery_name }}</td>
+                            
+                            <template v-for='elm in orderSet.exp_ship_date'>
+                            <td>
+                                @{{ elm }}
+                            </td>
                             </template>
-                        </template>
-                    </tr>
+                        </tr>
+
+                        <!-- 2行目 -->
+                        <tr>
+                            <td v-for='elm in orderSet.order_length'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+
+                        <!-- 3行目 -->
+                        <tr>
+                            <td v-for='elm in orderSet.result_length'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+
+
+                        <!-- 4行目 -->
+                        <tr>
+                            <td class="categoryBorder" v-for='elm in orderSet.roll_amount'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+                    </template>
+
                     </tbody>
                 </table>
             </div>

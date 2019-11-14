@@ -339,7 +339,10 @@ class ApiController extends Controller
         // ③検索結果に対してループを回す
         foreach ($orders as $order) {
 
+            // 結果セットの到着日を取得
             $dlvDate = date_create($order->delivery_date)->format('d');
+            // 結果セットの発送予定日を整形
+            $expShipDate = date_create($order->exp_ship_date)->format('m/d');
 
 
             // 品番・配送先が前回のループと同じ場合
@@ -349,8 +352,9 @@ class ApiController extends Controller
                 // 結果セットの最後のKeyを取得
                 $key = array_key_last($results);
 
+
                 // 該当する配送日の位置に挿入
-                $results[$key]['exp_ship_date'][$dlvDate - 1] = $order->exp_ship_date;
+                $results[$key]['exp_ship_date'][$dlvDate - 1] = $expShipDate;
                 $results[$key]['order_length'][$dlvDate - 1]  = $order->order_length;
                 if ($order->result_length) {
                     $results[$key]['result_length'][$dlvDate - 1] = $order->result_length;
@@ -382,7 +386,7 @@ class ApiController extends Controller
                 );
 
                 // 該当する配送日の位置に挿入
-                $tmpList['exp_ship_date'][$dlvDate - 1] = $order->exp_ship_date;
+                $tmpList['exp_ship_date'][$dlvDate - 1] = $expShipDate;
                 $tmpList['order_length'][$dlvDate - 1] = $order->order_length;
                 if($order->result_length){
                     $tmpList['result_length'][$dlvDate - 1] = $order->result_length;

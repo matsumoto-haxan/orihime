@@ -157,3 +157,58 @@ table.order_table > thead > tr > td {
 	font-weight: bold;
 	src: url('{{ storage_path("fonts/ipag.ttf") }}') format('truetype');
 }
+
+.mngTableWrapper {
+	font-size: 5px;
+  width: 1000px;
+  height: 800px;
+  overflow: scroll;
+  text-align: center;
+}
+.mngTableWrapper table {
+  table-layout: fixed;
+  width: 100%;
+  background-color: #fff;
+}
+
+.mngTableWrapper table thead tr td{
+  z-index: 100;
+  background-color: #fff;
+  border: 1px solid #bdbdbf;
+}
+.mngTableWrapper table tbody tr td{
+	border: 1px solid #bdbdbf;
+}
+
+.mngPrdCell{
+	width: 100px;
+	word-wrap:break-word;
+	z-index: 101 !important;
+}
+.mngDlvCell{
+	width: 100px;
+	word-wrap:break-word;
+	z-index: 101 !important;
+}
+.mngCalCell{
+	width: 50px;
+}
+
+td.topfix {
+  position: sticky;
+  top: 0;
+}
+td.leftfix1 {
+  background-color: #fff;
+  position: sticky;
+  left: 0;
+}
+td.leftfix2 {
+  background-color: #fff;
+  position: sticky;
+  left: 100px;
+}
+
+.categoryBorder{
+	border-bottom: #696969 2px solid !important;
+}
