@@ -16,6 +16,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // サービスのバインディング（呼び出し名と実クラスの紐付け）
         $this->app->bind('ManagementService', 'App\Services\ManagementService');
+        $this->app->bind('OrderService', 'App\Services\OrderService');
+
 
     }
 
