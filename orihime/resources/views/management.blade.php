@@ -115,7 +115,7 @@
                         <tr>
                             <td class="topfix leftfix1 mngPrdCell">品番</td>
                             <td class="topfix leftfix2 mngDlvCell">出荷先</td>
-                            <td v-for="value in calenderInt" class="topfix mngCalCell">
+                            <td v-for="value in calendarInt" class="topfix mngCalCell">
                                 @{{ value }}
                             </td>
                         </tr>

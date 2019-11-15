@@ -49362,7 +49362,7 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 var mngapp = new Vue({
   el: '#mngapp',
   data: {
-    calenderInt: [
+    calendarInt: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
       21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
@@ -49543,7 +49543,18 @@ var mngapp = new Vue({
       });
     },
     exportMngPdf: function () {
-      
+      axios.get('/management/export', {
+        params: {
+          company_id: this.search.company_id,
+          customer_code: this.search.customer_code,
+          product_id: this.search.product_id,
+          product_code: this.search.product_code,
+          material_code: this.search.material_code,
+          delivery_date: this.search.delivery_date,
+        }
+      }).then((res) => {
+        window.location = res.request.responseURL
+      });
     }
   }
 });

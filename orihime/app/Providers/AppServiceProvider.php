@@ -14,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // サービスのバインディング（呼び出し名と実クラスの紐付け）
+        $this->app->bind('ManagementService', 'App\Services\ManagementService');
+
     }
 
     /**

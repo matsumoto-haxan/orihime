@@ -81,4 +81,13 @@
     'normal' => $fontDir . '/4506e8f58d96e12b97ea083c4e176f13',
     'bold' => $fontDir . '/4506e8f58d96e12b97ea083c4e176f13',
   ),
+  'nunito' => array(
+    'normal' => $fontDir . '/176125b1b6dc4704cbf0390040859779',
+  ),
+  'font awesome 5 brands' => array(
+    'normal' => $fontDir . '/dd8ce302016f77ae4ce7c74468e0a764',
+  ),
+  'font awesome 5 free' => array(
+    'normal' => $fontDir . '/d2a4a5d643f565d990fa8ef0696b1838',
+  ),
 ) ?>
