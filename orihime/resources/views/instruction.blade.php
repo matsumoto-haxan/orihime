@@ -9,6 +9,13 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <!-- APIトークンの読み込み -->
+    <script>
+        window.Laravel = {!! json_encode([
+            'apiToken' => \Auth::user()->api_token ?? null
+        ]) !!};
+    </script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/order.js') }}" defer></script>
@@ -23,7 +30,7 @@
     <link href="{{ asset('css/haxanstyle.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="insapp">
         <!-- ヘッダー -->
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -38,14 +45,59 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto header_input_list">
                         <li>
-                            ヘッダー
+                            <select v-model="search.customer_code" v-on:blur="setDeliveryList">
+                                <option v-for="option in search.customerList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                            </select>
+                        </li>
+                        <li>
+                            <select v-model="search.company_id">
+                                <option v-for="option in search.deliveryList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                            </select>
+                        </li>
+                        <li class="nav-item">
+                            <button class="" v-on:click="getProductList">しぼりこむ</button>
+                        </li>
+                        <li>
+                            <select v-model="search.product_code" v-on:blur="setMaterialList">
+                                <option v-for="option in search.productList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.material_code" v-on:blur="setColorList">
+                                <option v-for="option in search.materialList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.product_id">
+                                <option v-for="option in search.colorList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
+                        </li>
+                        <li>
+                            <select v-model="search.delivery_date" >
+                                <option v-for="option in search.dateList" v-bind:value="option.key">
+                                    @{{ option.value }}
+                                </option>
+                        </select>
                         </li>
 
+                    </ul>
+                    
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <button class="" >表示</button>
+                            <button class="" v-on:click="searchMngList">表示</button>
+                            <button class="" v-on:click="exportMngPdf">印刷</button>
                         </li>
 
                     </ul>
@@ -54,8 +106,61 @@
         </nav>
 
         <main class="py-4">
-            出荷依頼書
-        
+            出荷依頼書 出力画面
+            <div class="mngTableWrapper">
+
+                <table class="sticky_table">
+                    <!-- ヘッダー行 -->
+                    <thead>
+                        <tr>
+                            <td class="topfix leftfix1 mngPrdCell">品番</td>
+                            <td class="topfix leftfix2 mngDlvCell">出荷先</td>
+                            <td v-for="value in calendarInt" class="topfix mngCalCell">
+                                @{{ value }}
+                            </td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <!-- 1行目 -->
+                    <template v-for="orderSet in orderSetList">
+                        <tr >
+                            <td class="leftfix1 categoryBorder" rowspan='4'> @{{ orderSet.product_code }}</td>
+                            <td class="leftfix2 categoryBorder" rowspan='4'> @{{ orderSet.delivery_name }}</td>
+                            
+                            <template v-for='elm in orderSet.exp_ship_date'>
+                            <td>
+                                @{{ elm }}
+                            </td>
+                            </template>
+                        </tr>
+
+                        <!-- 2行目 -->
+                        <tr>
+                            <td v-for='elm in orderSet.order_length'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+
+                        <!-- 3行目 -->
+                        <tr>
+                            <td v-for='elm in orderSet.result_length'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+
+
+                        <!-- 4行目 -->
+                        <tr>
+                            <td class="categoryBorder" v-for='elm in orderSet.roll_amount'>
+                                @{{ elm }}
+                            </td>
+                        </tr>
+                    </template>
+
+                    </tbody>
+                </table>
+            </div>
         </main>
 
 

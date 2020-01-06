@@ -12,7 +12,7 @@ use App\Calendar;
 /**
  * APIのコントローラクラス
  * 処理が簡単なものはこちらに突っ込んでいます
- * 処理が長いものはサービスクラスに突っ込んでいます
+ * 処理が長いものは各サービスクラスに突っ込んでいます
  */
 class ApiController extends Controller
 {
@@ -164,10 +164,21 @@ class ApiController extends Controller
 
     /**
      * 注文管理表一覧取得API
+     * （処理が長いので、そのまま個別のサービスクラスに投げています）
      */
     public function mngSearch(Request $request)
     {
         $results = app('ManagementService')->getOrderList($request);
+        return $results;
+    }
+
+    /**
+     * 注文管理表一覧取得API
+     * （処理が長いので、そのまま個別のサービスクラスに投げています）
+     */
+    public function insSearch(Request $request)
+    {
+        $results = app('InstructionService')->getOrderList($request);
         return $results;
     }
 }

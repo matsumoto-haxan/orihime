@@ -47,3 +47,11 @@ Route::get('/management/productlist', 'ApiController@getProductlist')->name('man
 Route::get('/management/search', 'ApiController@mngSearch')->name('management_search');
 
 
+/* ---------- 注文依頼書画面からのAPIリクエスト ---------- */
+// 会社一覧取得
+Route::get('/instruction/companylist', 'ApiController@getCompanylist')->name('instruction_getCompanylist');
+// 製品一覧取得
+Route::get('/instruction/productlist', 'ApiController@getProductlist')->name('instruction_getProductlist');
+// 注文一覧取得
+Route::get('/instruction/search', 'ApiController@insSearch')->name('instruction_search');
+

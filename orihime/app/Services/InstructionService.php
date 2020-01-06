@@ -8,7 +8,7 @@ use App\Product;
 use App\Company;
 use App\Calendar;
 
-class ManagementService
+class InstructionService
 {
     /**
      * 注文を検索して整形して返すメソッド
@@ -17,6 +17,21 @@ class ManagementService
      */
     public function getOrderList(Request $request)
     {
+        $query = Order::query();
+        $query->select('*')
+            ->addSelect('orders.id as order_id')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->join('companies', 'orders.company_id', '=', 'companies.id');
+        $results = $query->get();
+
+
+        return $results;
+
+
+
+        /* TODO: 以下、Mngでのロジックをそのまま残しています。あとで消します。 */
+
+        
         /*
          ①DBから取得 
          */
